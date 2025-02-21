@@ -1,0 +1,28 @@
+import express from 'express'
+import { connectToDB } from './lib/db.js'
+import cors from 'cors'
+import { corsBoth } from './lib/cors-configs.js'
+
+import authRouter from './routes/auth.js'
+import profilesRouter from './routes/profiles.js'
+import mealRegistrationRouter from './routes/meal-registrations.js'
+import transactionsRouter from './routes/transactions.js'
+
+const app = express()
+const port = process.env.PORT || 4000
+
+app.use(cors(corsBoth))
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+connectToDB()
+
+app.use(authRouter)
+app.use(profilesRouter)
+app.use(mealRegistrationRouter)
+app.use(transactionsRouter)
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`)
+})

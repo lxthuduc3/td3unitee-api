@@ -1,0 +1,39 @@
+import { Router } from 'express'
+import {
+  getOwnExpenses,
+  createExpense,
+  getOwnExpense,
+  editExpense,
+  deleteExpense,
+  getOwnBoardingFees,
+  createBoardingFee,
+  getOwnBoardingFee,
+  editBoardingFee,
+  deleteBoardingFee,
+  getTransactions,
+  getTransaction,
+  updateTransaction,
+} from '../controllers/transactions.js'
+import { authenticateToken } from '../middlewares/auth.js'
+
+const transactionsRouter = Router()
+
+// Member Routes
+transactionsRouter.get('/me/expenses', authenticateToken, getOwnExpenses)
+transactionsRouter.post('/me/expenses', authenticateToken, createExpense)
+transactionsRouter.get('/me/expenses/:id', authenticateToken, getOwnExpense)
+transactionsRouter.patch('/me/expenses/:id', authenticateToken, editExpense)
+transactionsRouter.delete('/me/expenses/:id', authenticateToken, deleteExpense)
+
+transactionsRouter.get('/me/boarding-fees', authenticateToken, getOwnBoardingFees)
+transactionsRouter.post('/me/boarding-fees', authenticateToken, createBoardingFee)
+transactionsRouter.get('/me/boarding-fees/:id', authenticateToken, getOwnBoardingFee)
+transactionsRouter.patch('/me/boarding-fees/:id', authenticateToken, editBoardingFee)
+transactionsRouter.delete('/me/boarding-fees/:id', authenticateToken, deleteBoardingFee)
+
+// Admin Routes
+transactionsRouter.get('/transactions', authenticateToken, getTransactions)
+transactionsRouter.get('/transactions/:id', authenticateToken, getTransaction)
+transactionsRouter.patch('/transactions/:id', authenticateToken, updateTransaction)
+
+export default transactionsRouter
