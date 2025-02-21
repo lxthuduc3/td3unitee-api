@@ -4,7 +4,7 @@ import cors from 'cors'
 import { corsBoth } from './lib/cors-configs.js'
 
 import authRouter from './routes/auth.js'
-import profilesRouter from './routes/profiles.js'
+import usersRouter from './routes/users.js'
 import mealRegistrationRouter from './routes/meal-registrations.js'
 import transactionsRouter from './routes/transactions.js'
 
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 connectToDB()
 
 app.use(authRouter)
-app.use(profilesRouter)
+app.use(usersRouter)
 app.use(mealRegistrationRouter)
 app.use(transactionsRouter)
 

@@ -75,3 +75,102 @@ export const getMembers = async (req, res) => {
     return res.status(500).json('Internal Server Error')
   }
 }
+
+export const updateMember = async (req, res) => {
+  const { id } = req.params
+  const { room, role } = req.body
+
+  try {
+    const member = await User.findOneAndUpdate(
+      { _id: id, status: 'active' },
+      {
+        room,
+        role,
+      },
+      { new: true }
+    )
+
+    if (!member) {
+      return res.status(404).json('Member Not Found')
+    }
+
+    return res.status(200).json(member)
+  } catch (error) {
+    console.error('[updateMember]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const maskMemberAsLeft = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const member = await User.findOneAndUpdate(
+      { _id: id, status: 'active' },
+      {
+        status: 'left',
+      },
+      { new: true }
+    )
+
+    if (!member) {
+      return res.status(404).json('Member Not Found')
+    }
+
+    return res.status(200).json(member)
+  } catch (error) {
+    console.error('[maskMemberAsLeft]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const getRequests = async (req, res) => {
+  try {
+    const requests = await User.find({ status: 'pending' }).sort({ createdAt: -1 })
+
+    return res.status(200).json(requests)
+  } catch (error) {
+    console.error('[getRequests]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const approveRequest = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const request = await User.findOneAndUpdate(
+      { _id: id, status: 'pending' },
+      {
+        status: 'active',
+      },
+      { new: true }
+    )
+
+    if (!request) {
+      return res.status(404).json('Request Not Found')
+    }
+
+    return res.status(200).json(request)
+  } catch (error) {
+    console.error('[approveRequest]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const rejectAndDeleteRequest = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const request = await User.findOneAndDelete({ _id: id, status: 'pending' })
+
+    if (!request) {
+      return res.status(404).json('Request Not Found')
+    }
+
+    return res.status(200).json('Request Rejected And Deleted Successfully')
+  } catch (error) {
+    console.error('[rejectAndDeleteRequest]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}

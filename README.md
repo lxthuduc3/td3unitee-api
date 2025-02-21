@@ -10,11 +10,11 @@
 | [x] | `/me/profile/edit`          | `PATCH`  | `updateProfile`          | Member  |
 | [x] | `/members`                  | `GET`    | `getMembers`             | Both    |
 | [x] | `/members/:id`              | `GET`    | `getProfile`             | Both    |
-| [ ] | `/members/:id`              | `PATCH`  | `updateMember`           | Admin   |
-| [ ] | `/members/:id/mask-as-left` | `PATCH`  | `maskMemberAsLeft`       | Admin   |
-| [ ] | `/requests`                 | `GET`    | `getRequests`            | Admin   |
-| [ ] | `/requests/:id`             | `PATCH`  | `approveRequest`         | Admin   |
-| [ ] | `/requests/:id`             | `DELETE` | `rejectAndDeleteRequest` | Admin   |
+| [x] | `/members/:id`              | `PATCH`  | `updateMember`           | Admin   |
+| [x] | `/members/:id/mask-as-left` | `PATCH`  | `maskMemberAsLeft`       | Admin   |
+| [x] | `/requests`                 | `GET`    | `getRequests`            | Admin   |
+| [x] | `/requests/:id`             | `PATCH`  | `approveRequest`         | Admin   |
+| [x] | `/requests/:id`             | `DELETE` | `rejectAndDeleteRequest` | Admin   |
 
 > All `/me/*` routes get user ID (`req.user.id`) from `accessToken` via `authenticateToken` middleware.
 

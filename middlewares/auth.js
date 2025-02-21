@@ -14,9 +14,16 @@ export const authenticateToken = (req, res, next) => {
     if (status != 'active') {
       return res.status(403).json('User Not Active')
     }
-    req.user = { id }
+    req.user = { id, role }
     next()
   } catch (error) {
-    return res.status(403).json('Invalid or expired token')
+    return res.status(401).json('Invalid or expired token')
   }
+}
+
+export const checkAdminPermission = (req, res, next) => {
+  if (req.user.role != 'executiveBoard') {
+    return res.status(403).json('Permission Denied')
+  }
+  next()
 }
