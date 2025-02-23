@@ -14,11 +14,10 @@ import {
   getTransaction,
   updateTransaction,
 } from '../controllers/transactions.js'
-import { authenticateToken } from '../middlewares/auth.js'
+import { authenticateToken, checkAdminPermission } from '../middlewares/auth.js'
 
 const transactionsRouter = Router()
 
-// Member Routes
 transactionsRouter.get('/me/expenses', authenticateToken, getOwnExpenses)
 transactionsRouter.post('/me/expenses', authenticateToken, createExpense)
 transactionsRouter.get('/me/expenses/:id', authenticateToken, getOwnExpense)
@@ -31,9 +30,8 @@ transactionsRouter.get('/me/boarding-fees/:id', authenticateToken, getOwnBoardin
 transactionsRouter.patch('/me/boarding-fees/:id', authenticateToken, editBoardingFee)
 transactionsRouter.delete('/me/boarding-fees/:id', authenticateToken, deleteBoardingFee)
 
-// Admin Routes
-transactionsRouter.get('/transactions', authenticateToken, getTransactions)
-transactionsRouter.get('/transactions/:id', authenticateToken, getTransaction)
-transactionsRouter.patch('/transactions/:id', authenticateToken, updateTransaction)
+transactionsRouter.get('/transactions', authenticateToken, checkAdminPermission, getTransactions)
+transactionsRouter.get('/transactions/:id', authenticateToken, checkAdminPermission, getTransaction)
+transactionsRouter.patch('/transactions/:id', authenticateToken, checkAdminPermission, updateTransaction)
 
 export default transactionsRouter

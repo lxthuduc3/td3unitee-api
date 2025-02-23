@@ -36,27 +36,27 @@
 
 |     | Route                   | Method   | Controller           | Used By | Note                                            |
 | --- | ----------------------- | -------- | -------------------- | ------- | ----------------------------------------------- |
-| [ ] | `/me/expenses`          | `GET`    | `getOwnExpenses`     | Member  | Queries: dateFrom, dateTo, status               |
-| [ ] | `/me/expenses`          | `POST`   | `createExpense`      | Member  |                                                 |
-| [ ] | `/me/expenses/:id`      | `GET`    | `getOwnExpense`      | Member  |                                                 |
-| [ ] | `/me/expenses/:id`      | `PATCH`  | `editExpense`        | Member  | Only when it is Pending or PendingReimbursement |
-| [ ] | `/me/expenses/:id`      | `DELETE` | `deleteExpense`      | Member  | Only when it is Pending or PendingReimbursement |
-| [ ] | `/me/boarding-fees`     | `GET`    | `getOwnBoardingFees` | Member  |                                                 |
-| [ ] | `/me/boarding-fees`     | `POST`   | `createBoardingFee`  | Member  |                                                 |
-| [ ] | `/me/boarding-fees/:id` | `GET`    | `getOwnBoardingFee`  | Member  |                                                 |
-| [ ] | `/me/boarding-fees/:id` | `PATCH`  | `editBoardingFee`    | Member  | Only when it is Pending                         |
-| [ ] | `/me/boarding-fees/:id` | `DELETE` | `deleteBoardingFee`  | Member  | Only when it is Pending                         |
-| [ ] | `transactions`          | `GET`    | `getTransactions`    | Admin   | Queries: dateFrom, dateTo, status, category     |
-| [ ] | `transactions/:id`      | `GET`    | `getTransaction`     | Admin   |                                                 |
-| [ ] | `transactions/:id`      | `PATCH`  | `updateTransaction`  | Admin   | Set category and change status                  |
+| [x] | `/me/expenses`          | `GET`    | `getOwnExpenses`     | Member  | Queries: dateFrom, dateTo, status               |
+| [x] | `/me/expenses`          | `POST`   | `createExpense`      | Member  |                                                 |
+| [x] | `/me/expenses/:id`      | `GET`    | `getOwnExpense`      | Member  |                                                 |
+| [x] | `/me/expenses/:id`      | `PATCH`  | `editExpense`        | Member  | Only when it is Pending or PendingReimbursement |
+| [x] | `/me/expenses/:id`      | `DELETE` | `deleteExpense`      | Member  | Only when it is Pending or PendingReimbursement |
+| [x] | `/me/boarding-fees`     | `GET`    | `getOwnBoardingFees` | Member  |                                                 |
+| [x] | `/me/boarding-fees`     | `POST`   | `createBoardingFee`  | Member  |                                                 |
+| [x] | `/me/boarding-fees/:id` | `GET`    | `getOwnBoardingFee`  | Member  |                                                 |
+| [x] | `/me/boarding-fees/:id` | `PATCH`  | `editBoardingFee`    | Member  | Only when it is Pending                         |
+| [x] | `/me/boarding-fees/:id` | `DELETE` | `deleteBoardingFee`  | Member  | Only when it is Pending                         |
+| [x] | `transactions`          | `GET`    | `getTransactions`    | Admin   | Queries: dateFrom, dateTo, status, category     |
+| [x] | `transactions/:id`      | `GET`    | `getTransaction`     | Admin   |                                                 |
+| [x] | `transactions/:id`      | `PATCH`  | `updateTransaction`  | Admin   | Set category and change status                  |
 
 ### Transaction Categories
 
 |     | Route                         | Method  | Controller                  | Used By | Note          |
 | --- | ----------------------------- | ------- | --------------------------- | ------- | ------------- |
-| [ ] | `/transaction-categories`     | `GET`   | `getTransactionCategories`  | Admin   | Queries: type |
-| [ ] | `/transaction-categories`     | `POST`  | `createTransactionCategory` | Admin   |               |
-| [ ] | `/transaction-categories/:id` | `PATCH` | `editTransactionCategory`   | Admin   |               |
+| [x] | `/transaction-categories`     | `GET`   | `getTransactionCategories`  | Admin   | Queries: type |
+| [x] | `/transaction-categories`     | `POST`  | `createTransactionCategory` | Admin   |               |
+| [x] | `/transaction-categories/:id` | `PATCH` | `editTransactionCategory`   | Admin   |               |
 
 ### Absences
 
