@@ -71,10 +71,10 @@
 
 |     | Route         | Method   | Controller   | Used By | Note          |
 | --- | ------------- | -------- | ------------ | ------- | ------------- |
-| [ ] | `/dishes`     | `GET`    | `getDishes`  | Admin   | Queries: type |
-| [ ] | `/dishes`     | `POST`   | `createDish` | Admin   |               |
-| [ ] | `/dishes/:id` | `PATCH`  | `updateDish` | Admin   |               |
-| [ ] | `/dishes/:id` | `DELETE` | `deleteDish` | Admin   |               |
+| [x] | `/dishes`     | `GET`    | `getDishes`  | Admin   | Queries: type |
+| [x] | `/dishes`     | `POST`   | `createDish` | Admin   |               |
+| [x] | `/dishes/:id` | `PATCH`  | `updateDish` | Admin   |               |
+| [x] | `/dishes/:id` | `DELETE` | `deleteDish` | Admin   |               |
 
 ### Meals
 
