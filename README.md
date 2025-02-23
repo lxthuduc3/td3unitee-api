@@ -62,10 +62,10 @@
 
 |     | Route              | Method  | Controller       | Used By | Note                      |
 | --- | ------------------ | ------- | ---------------- | ------- | ------------------------- |
-| [ ] | `/me/absences`     | `GET`   | `getOwnAbsences` | Member  | Queries: dateFrom, dateTo |
-| [ ] | `/me/absences`     | `POST`  | `createAbsence`  | Member  |                           |
-| [ ] | `/me/absences/:id` | `PATCH` | `cancelAbsence`  | Member  |                           |
-| [ ] | `/absences`        | `GET`   | `getAbsences`    | Admin   | Queries: dateFrom, dateTo |
+| [x] | `/me/absences`     | `GET`   | `getOwnAbsences` | Member  | Queries: dateFrom, dateTo |
+| [x] | `/me/absences`     | `POST`  | `createAbsence`  | Member  |                           |
+| [x] | `/me/absences/:id` | `PATCH` | `cancelAbsence`  | Member  |                           |
+| [x] | `/absences`        | `GET`   | `getAbsences`    | Admin   | Queries: dateFrom, dateTo |
 
 ### Dishes
 

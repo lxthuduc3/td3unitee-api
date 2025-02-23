@@ -8,6 +8,7 @@ import usersRouter from './routes/users.js'
 import mealRegistrationRouter from './routes/meal-registrations.js'
 import transactionsRouter from './routes/transactions.js'
 import transactionCategoriesRouter from './routes/transaction-categories.js'
+import absencesRouter from './routes/absences.js'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -24,6 +25,7 @@ app.use(usersRouter)
 app.use(mealRegistrationRouter)
 app.use(transactionsRouter)
 app.use(transactionCategoriesRouter)
+app.use(absencesRouter)
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`)
