@@ -80,8 +80,8 @@
 
 |     | Route               | Method   | Controller   | Used By | Note |
 | --- | ------------------- | -------- | ------------ | ------- | ---- |
-| [ ] | `/meals`            | `GET`    | `getMeals`   | Admin   |      |
-| [ ] | `/meals`            | `POST`   | `createMeal` | Admin   |      |
-| [ ] | `/meals/:id`        | `PATCH`  | `updateMeal` | Admin   |      |
-| [ ] | `/meals/:id`        | `DELETE` | `deleteMeal` | Admin   |      |
-| [ ] | `/meals/:day/:meal` | `GET`    | `getMeal`    | Member  |      |
+| [x] | `/meals`            | `GET`    | `getMeals`   | Admin   |      |
+| [x] | `/meals`            | `POST`   | `createMeal` | Admin   |      |
+| [x] | `/meals/:id`        | `PATCH`  | `updateMeal` | Admin   |      |
+| [x] | `/meals/:id`        | `DELETE` | `deleteMeal` | Admin   |      |
+| [x] | `/meals/:day/:meal` | `GET`    | `getMeal`    | Member  |      |
