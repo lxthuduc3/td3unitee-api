@@ -241,7 +241,7 @@ export const getTransactions = async (req, res) => {
   if (category) query.category = category
 
   try {
-    const transactions = await Transaction.find(query)
+    const transactions = await Transaction.find(query).populate('transactor', 'familyName givenName avatar')
 
     return res.status(200).json(transactions)
   } catch (error) {

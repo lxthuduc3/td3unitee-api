@@ -1,10 +1,10 @@
 import TransactionCategory from '../models/transaction-category.js'
 
-export const getTransactionCategories = (req, res) => {
+export const getTransactionCategories = async (req, res) => {
   const { type } = req.query
 
   try {
-    const category = TransactionCategory.find({ query })
+    const category = await TransactionCategory.find({ type })
 
     return res.status(200).json(category)
   } catch (error) {
@@ -12,10 +12,10 @@ export const getTransactionCategories = (req, res) => {
     return res.status(500).json('Internal Server Error')
   }
 }
-export const createTransactionCategory = (req, res) => {
+export const createTransactionCategory = async (req, res) => {
   const { title, type } = req.body
   try {
-    const category = TransactionCategory.create({ title, type })
+    const category = await TransactionCategory.create({ title, type })
 
     return res.status(201).json(category)
   } catch (error) {
@@ -23,11 +23,11 @@ export const createTransactionCategory = (req, res) => {
     return res.status(500).json('Internal Server Error')
   }
 }
-export const editTransactionCategory = (req, res) => {
+export const editTransactionCategory = async (req, res) => {
   const { id } = req.params
-  const { title } = req.body
+  const { title, type } = req.body
   try {
-    const category = TransactionCategory.findById(id, { title }, { new: true })
+    const category = await TransactionCategory.findByIdAndUpdate(id, { title, type }, { new: true })
 
     if (!category) {
       return res.status(404).json('Transaction Category Not Found')
