@@ -34,21 +34,22 @@
 
 ### Transactions
 
-|     | Route                   | Method   | Controller           | Used By | Note                                            |
-| --- | ----------------------- | -------- | -------------------- | ------- | ----------------------------------------------- |
-| [x] | `/me/expenses`          | `GET`    | `getOwnExpenses`     | Member  | Queries: dateFrom, dateTo, status               |
-| [x] | `/me/expenses`          | `POST`   | `createExpense`      | Member  |                                                 |
-| [x] | `/me/expenses/:id`      | `GET`    | `getOwnExpense`      | Member  |                                                 |
-| [x] | `/me/expenses/:id`      | `PATCH`  | `editExpense`        | Member  | Only when it is Pending or PendingReimbursement |
-| [x] | `/me/expenses/:id`      | `DELETE` | `deleteExpense`      | Member  | Only when it is Pending or PendingReimbursement |
-| [x] | `/me/boarding-fees`     | `GET`    | `getOwnBoardingFees` | Member  |                                                 |
-| [x] | `/me/boarding-fees`     | `POST`   | `createBoardingFee`  | Member  |                                                 |
-| [x] | `/me/boarding-fees/:id` | `GET`    | `getOwnBoardingFee`  | Member  |                                                 |
-| [x] | `/me/boarding-fees/:id` | `PATCH`  | `editBoardingFee`    | Member  | Only when it is Pending                         |
-| [x] | `/me/boarding-fees/:id` | `DELETE` | `deleteBoardingFee`  | Member  | Only when it is Pending                         |
-| [x] | `transactions`          | `GET`    | `getTransactions`    | Admin   | Queries: dateFrom, dateTo, status, category     |
-| [x] | `transactions/:id`      | `GET`    | `getTransaction`     | Admin   |                                                 |
-| [x] | `transactions/:id`      | `PATCH`  | `updateTransaction`  | Admin   | Set category and change status                  |
+|     | Route                      | Method   | Controller           | Used By | Note                                            |
+| --- | -------------------------- | -------- | -------------------- | ------- | ----------------------------------------------- |
+| [x] | `/me/expenses`             | `GET`    | `getOwnExpenses`     | Member  | Queries: dateFrom, dateTo, status               |
+| [x] | `/me/expenses`             | `POST`   | `createExpense`      | Member  |                                                 |
+| [x] | `/me/expenses/:id`         | `GET`    | `getOwnExpense`      | Member  |                                                 |
+| [x] | `/me/expenses/:id`         | `PATCH`  | `editExpense`        | Member  | Only when it is Pending or PendingReimbursement |
+| [x] | `/me/expenses/:id/confirm` | `PATCH`  | `confirmExpense`     | Member  | Only when it is PendingConfirmation             |
+| [x] | `/me/expenses/:id`         | `DELETE` | `deleteExpense`      | Member  | Only when it is Pending or PendingReimbursement |
+| [x] | `/me/boarding-fees`        | `GET`    | `getOwnBoardingFees` | Member  | Queries: status                                 |
+| [x] | `/me/boarding-fees`        | `POST`   | `createBoardingFee`  | Member  |                                                 |
+| [x] | `/me/boarding-fees/:id`    | `GET`    | `getOwnBoardingFee`  | Member  |                                                 |
+| [x] | `/me/boarding-fees/:id`    | `PATCH`  | `editBoardingFee`    | Member  | Only when it is Pending                         |
+| [x] | `/me/boarding-fees/:id`    | `DELETE` | `deleteBoardingFee`  | Member  | Only when it is Pending                         |
+| [x] | `transactions`             | `GET`    | `getTransactions`    | Admin   | Queries: dateFrom, dateTo, status, category     |
+| [x] | `transactions/:id`         | `GET`    | `getTransaction`     | Admin   |                                                 |
+| [x] | `transactions/:id`         | `PATCH`  | `updateTransaction`  | Admin   | Set category and change status                  |
 
 ### Transaction Categories
 

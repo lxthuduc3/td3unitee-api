@@ -4,6 +4,7 @@ import {
   createExpense,
   getOwnExpense,
   editExpense,
+  confirmExpense,
   deleteExpense,
   getOwnBoardingFees,
   createBoardingFee,
@@ -22,6 +23,7 @@ transactionsRouter.get('/me/expenses', authenticateToken, getOwnExpenses)
 transactionsRouter.post('/me/expenses', authenticateToken, createExpense)
 transactionsRouter.get('/me/expenses/:id', authenticateToken, getOwnExpense)
 transactionsRouter.patch('/me/expenses/:id', authenticateToken, editExpense)
+transactionsRouter.patch('/me/expenses/:id/confirm', authenticateToken, confirmExpense)
 transactionsRouter.delete('/me/expenses/:id', authenticateToken, deleteExpense)
 
 transactionsRouter.get('/me/boarding-fees', authenticateToken, getOwnBoardingFees)

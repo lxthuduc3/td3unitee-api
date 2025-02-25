@@ -9,6 +9,7 @@ export const getOwnExpenses = async (req, res) => {
   const query = {
     type: 'expense',
     transactor,
+    date: {},
   }
 
   if (dateFrom) query.date.$gte = getStartOfDate(dateFrom)
@@ -36,7 +37,7 @@ export const createExpense = async (req, res) => {
       date,
       transactor,
       type: 'expense',
-      status: funded ? 'pendingReimbursement' : 'pending',
+      status: funded ? 'pending' : 'pendingReimbursement',
     })
 
     return res.status(201).json(transaction)
@@ -66,14 +67,12 @@ export const getOwnExpense = async (req, res) => {
 export const editExpense = async (req, res) => {
   const { id: transactor } = req.user
   const { id } = req.params
-  const { date, amount, desc } = req.body
+  const { date, amount, desc, funded } = req.body
 
   try {
     const transaction = await Transaction.findOneAndUpdate(
       { _id: id, transactor, status: { $in: ['pending', 'pendingReimbursement'] } },
-      date,
-      amount,
-      desc,
+      { date, amount, desc, status: funded ? 'pending' : 'pendingReimbursement' },
       { new: true }
     )
 
@@ -84,6 +83,28 @@ export const editExpense = async (req, res) => {
     return res.status(200).json(transaction)
   } catch (error) {
     console.error('[editExpense]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const confirmExpense = async (req, res) => {
+  const { id: transactor } = req.user
+  const { id } = req.params
+
+  try {
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: id, transactor, status: 'pendingConfirmation' },
+      { status: 'completed' },
+      { new: true }
+    )
+
+    if (!transaction) {
+      return res.status(404).json('Transaction Not Found Or Can No Longer Be Edited')
+    }
+
+    return res.status(200).json(transaction)
+  } catch (error) {
+    console.error('[confirmExpense]', error)
     return res.status(500).json('Internal Server Error')
   }
 }
@@ -110,15 +131,13 @@ export const deleteExpense = async (req, res) => {
 
 export const getOwnBoardingFees = async (req, res) => {
   const { id: transactor } = req.user
-  const { dateFrom, dateTo, status } = req.query
+  const { status } = req.query
 
   const query = {
     type: 'income',
     transactor,
   }
 
-  if (dateFrom) query.date.$gte = getStartOfDate(dateFrom)
-  if (dateTo) query.date.$lte = getEndOfDate(dateTo)
   if (status) query.status = Array.isArray(status) ? { $in: status } : status
 
   try {
@@ -177,9 +196,7 @@ export const editBoardingFee = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndUpdate(
       { _id: id, transactor, status: 'pending' },
-      date,
-      amount,
-      desc,
+      { date, amount, desc },
       { new: true }
     )
 

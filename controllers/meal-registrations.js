@@ -84,7 +84,7 @@ export const deleteMealRegistration = async (req, res) => {
 }
 
 export const getMealRegistrationsByMeal = async (req, res) => {
-  const { date, meal } = req.query
+  const { date, meal } = req.params
 
   const startOfDate = new Date(date)
   startOfDate.setHours(0, 0, 0, 0)
