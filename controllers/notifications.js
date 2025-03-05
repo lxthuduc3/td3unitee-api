@@ -90,7 +90,29 @@ export const getNotification = async (req, res) => {
         },
       },
       {
-        $unset: 'seenBy',
+        $lookup: {
+          from: 'users',
+          localField: 'sender',
+          foreignField: '_id',
+          as: 'senderInfo',
+        },
+      },
+      {
+        $unwind: '$senderInfo',
+      },
+      {
+        $project: {
+          seen: 1,
+          title: 1,
+          body: 1,
+          createdAt: 1,
+          sender: {
+            _id: '$senderInfo._id',
+            familyName: '$senderInfo.familyName',
+            givenName: '$senderInfo.givenName',
+            avatar: '$senderInfo.avatar',
+          },
+        },
       },
     ])
 
