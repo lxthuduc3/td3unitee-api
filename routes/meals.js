@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import { getMeals, createMeal, updateMeal, deleteMeal, getMeal } from '../controllers/meals.js'
-import { authenticateToken, checkAdminPermission } from '../middlewares/auth.js'
+import { authenticateUser, checkAdminPermission } from '../middlewares/auth.js'
 
 const mealsRouter = Router()
 
-mealsRouter.get('/meals', authenticateToken, checkAdminPermission, getMeals)
-mealsRouter.post('/meals', authenticateToken, checkAdminPermission, createMeal)
-mealsRouter.patch('/meals/:id', authenticateToken, checkAdminPermission, updateMeal)
-mealsRouter.delete('/meals/:id', authenticateToken, checkAdminPermission, deleteMeal)
-mealsRouter.get('/meals/:day/:meal', authenticateToken, getMeal)
+mealsRouter.get('/meals', authenticateUser, checkAdminPermission, getMeals)
+mealsRouter.post('/meals', authenticateUser, checkAdminPermission, createMeal)
+mealsRouter.patch('/meals/:id', authenticateUser, checkAdminPermission, updateMeal)
+mealsRouter.delete('/meals/:id', authenticateUser, checkAdminPermission, deleteMeal)
+mealsRouter.get('/meals/:day/:meal', authenticateUser, getMeal)
 
 export default mealsRouter

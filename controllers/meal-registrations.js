@@ -1,6 +1,7 @@
 import MealRegistration from '../models/meal-registration.js'
 
 import { getCurrentWeek, generateDateArray, isSameDate } from '../lib/datetime.js'
+import { startOfDay, endOfDay, startOfWeek, endOfWeek, addDays } from 'date-fns'
 
 export const createMealRegistration = async (req, res) => {
   const user = req.user.id
@@ -18,28 +19,20 @@ export const createMealRegistration = async (req, res) => {
 
 export const getOwnMealRegistrations = async (req, res) => {
   const user = req.user.id
-  const currentWeek = getCurrentWeek()
-  const { dateFrom = currentWeek.start, dateTo = currentWeek.end } = req.query
 
-  const startDate = new Date(dateFrom)
-  startDate.setHours(0, 0, 0, 0)
-
-  const endDate = new Date(dateTo)
-  endDate.setHours(23, 59, 59, 999)
+  let today = new Date()
+  if (today.getDay() == 6 && today.getHours() >= 19) {
+    today = addDays(today, 1)
+  }
+  const { dateFrom = startOfDay(startOfWeek(today)), dateTo = endOfDay(endOfWeek(today)) } = req.query
 
   try {
     const registrations = await MealRegistration.find({
       user,
-      date: { $gte: startDate, $lte: endDate },
+      date: { $gte: dateFrom, $lte: dateTo },
     })
 
-    const formatedResult = generateDateArray(dateFrom, dateTo).map((date) => ({
-      date,
-      lunch: registrations.find((reg) => isSameDate(reg.date, date) && reg.meal == 'lunch'),
-      dinner: registrations.find((reg) => isSameDate(reg.date, date) && reg.meal == 'dinner'),
-    }))
-
-    return res.status(200).json(formatedResult)
+    return res.status(200).json(registrations)
   } catch (error) {
     console.error('[getOwnMealRegistrations]', error)
     return res.status(500).json({ message: 'Internal Server Error' })

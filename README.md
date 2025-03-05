@@ -16,7 +16,7 @@
 | [x] | `/requests/:id`             | `PATCH`  | `approveRequest`         | Admin   |
 | [x] | `/requests/:id`             | `DELETE` | `rejectAndDeleteRequest` | Admin   |
 
-> All `/me/*` routes get user ID (`req.user.id`) from `accessToken` via `authenticateToken` middleware.
+> All `/me/*` routes get user ID (`req.user.id`) from `accessToken` via `authenticateUser` middleware.
 
 ### Meal Registrations
 

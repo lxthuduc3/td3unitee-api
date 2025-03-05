@@ -6,15 +6,15 @@ import {
   deleteMealRegistration,
   getMealRegistrationsByMeal,
 } from '../controllers/meal-registrations.js'
-import { authenticateToken } from '../middlewares/auth.js'
+import { authenticateUser } from '../middlewares/auth.js'
 
 const mealRegistrationRouter = Router()
 
-mealRegistrationRouter.get('/me/meal-registrations', authenticateToken, getOwnMealRegistrations)
-mealRegistrationRouter.post('/me/meal-registrations', authenticateToken, createMealRegistration)
-mealRegistrationRouter.patch('/me/meal-registrations/:id', authenticateToken, updateMealRegistration)
-mealRegistrationRouter.delete('/me/meal-registrations/:id', authenticateToken, deleteMealRegistration)
+mealRegistrationRouter.get('/me/meal-registrations', authenticateUser, getOwnMealRegistrations)
+mealRegistrationRouter.post('/me/meal-registrations', authenticateUser, createMealRegistration)
+mealRegistrationRouter.patch('/me/meal-registrations/:id', authenticateUser, updateMealRegistration)
+mealRegistrationRouter.delete('/me/meal-registrations/:id', authenticateUser, deleteMealRegistration)
 
-mealRegistrationRouter.get('/meal-registrations/:date/:meal', authenticateToken, getMealRegistrationsByMeal)
+mealRegistrationRouter.get('/meal-registrations/:date/:meal', authenticateUser, getMealRegistrationsByMeal)
 
 export default mealRegistrationRouter

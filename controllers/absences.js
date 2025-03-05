@@ -58,7 +58,7 @@ export const getAbsences = async (req, res) => {
   if (dateTo) query.date = { ...query.date, $lte: getEndOfDate(dateTo) }
 
   try {
-    const absences = await Absence.find(query)
+    const absences = await Absence.find(query).populate('user')
     return res.status(200).json(absences)
   } catch (error) {
     console.error('[getAbsences]', error)

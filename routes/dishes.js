@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import { getDishes, createDish, updateDish, deleteDish } from '../controllers/dishes.js'
-import { authenticateToken, checkAdminPermission } from '../middlewares/auth.js'
+import { authenticateUser, checkAdminPermission } from '../middlewares/auth.js'
 
 const dishesRouter = Router()
 
-dishesRouter.get('/dishes', authenticateToken, checkAdminPermission, getDishes)
-dishesRouter.post('/dishes', authenticateToken, checkAdminPermission, createDish)
-dishesRouter.patch('/dishes/:id', authenticateToken, checkAdminPermission, updateDish)
-dishesRouter.delete('/dishes/:id', authenticateToken, checkAdminPermission, deleteDish)
+dishesRouter.get('/dishes', authenticateUser, checkAdminPermission, getDishes)
+dishesRouter.post('/dishes', authenticateUser, checkAdminPermission, createDish)
+dishesRouter.patch('/dishes/:id', authenticateUser, checkAdminPermission, updateDish)
+dishesRouter.delete('/dishes/:id', authenticateUser, checkAdminPermission, deleteDish)
 
 export default dishesRouter

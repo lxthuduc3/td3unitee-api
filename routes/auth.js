@@ -1,10 +1,9 @@
 import { Router } from 'express'
-import { getUserByEmail, findUserByEmailOrCreate, refreshAccessToken } from '../controllers/auth.js'
+import { findUserByEmailOrCreate, refreshToken } from '../controllers/auth.js'
 
 const authRouter = Router()
 
-authRouter.get('/auth/session/:email', getUserByEmail)
-authRouter.post('/auth/login-or-register', findUserByEmailOrCreate)
-authRouter.post('/auth/refresh-access-token', refreshAccessToken)
+authRouter.post('/auth/google', findUserByEmailOrCreate)
+authRouter.post('/auth/google/refresh', refreshToken)
 
 export default authRouter

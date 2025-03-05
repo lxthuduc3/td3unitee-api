@@ -1,23 +1,36 @@
-import jwt from 'jsonwebtoken'
+import { OAuth2Client } from 'google-auth-library'
+import User from '../models/user.js'
 
-export const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization
+const oAuth2Client = new OAuth2Client(process.env.GOOGLE_ID)
 
-  if (!authHeader) {
-    return res.status(401).json('Authorization header missing')
-  }
-
-  const token = authHeader.split('Bearer ')[1]
+export const authenticateUser = async (req, res, next) => {
   try {
-    const { id, status, role } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-
-    if (status != 'active') {
-      return res.status(403).json('User Not Active')
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json('Unauthorized: No token provided')
     }
-    req.user = { id, role }
+
+    const token = authHeader.split(' ')[1]
+    const ticket = await oAuth2Client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_ID,
+    })
+
+    const payload = ticket.getPayload()
+    if (!payload) {
+      return res.status(401).json('Unauthorized: Invalid token')
+    }
+
+    const user = await User.findOne({ email: payload.email })
+    if (!user) {
+      return res.status(401).json('Unauthorized: User not found')
+    }
+
+    req.user = { id: user._id, role: user.role }
     next()
   } catch (error) {
-    return res.status(401).json('Invalid or expired token')
+    console.error('[authenticateUser]', error)
+    return res.status(401).json('Unauthorized: Token verification failed')
   }
 }
 

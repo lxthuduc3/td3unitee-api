@@ -1,76 +1,39 @@
 import User from '../models/user.js'
-import { generateAccessToken, generateRefreshToken } from '../lib/jwt.js'
-import jwt from 'jsonwebtoken'
+import { OAuth2Client, UserRefreshClient } from 'google-auth-library'
 
-// Session
-export const getUserByEmail = async (req, res) => {
-  const { email } = req.params
-
-  try {
-    if (!email) {
-      return res.status(400).json('Email Is Required')
-    }
-
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return res.status(404).json('User Not Found')
-    }
-
-    return res.status(200).json(user)
-  } catch (error) {
-    console.error('[getUserByEmail]', error)
-    return res.status(500).json('Internal server error')
-  }
-}
+const oAuth2Client = new OAuth2Client(process.env.GOOGLE_ID, process.env.GOOGLE_SECRET, 'postmessage')
 
 // Login or Register
 export const findUserByEmailOrCreate = async (req, res) => {
-  const { email, givenName, familyName, avatar } = req.body
-
   try {
-    let user = await User.findOneAndUpdate({ email }, { givenName, familyName }, { new: true })
+    const { tokens } = await oAuth2Client.getToken(req.body.code)
+
+    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
+    })
+    const { email, picture: avatar, family_name: familyName, given_name: givenName } = await userInfoResponse.json()
+
+    let user = await User.findOneAndUpdate({ email }, { givenName, familyName, avatar }, { new: true })
 
     if (!user) {
       user = await User.create({ email, givenName, familyName, avatar })
     }
 
-    const accessToken = generateAccessToken(user)
-    const refreshToken = generateRefreshToken(user)
-
-    return res.status(200).json({ user, accessToken, refreshToken })
+    res.json({ tokens, user })
   } catch (error) {
     console.error('[findUserByEmailOrCreate]', error)
-    return res.status(500).json('Internal Server Error')
+    res.status(500).json('Internal Server Error')
   }
 }
 
-export const refreshAccessToken = async (req, res) => {
-  const { refreshToken } = req.body
-
-  if (!refreshToken) {
-    return res.status(400).json('Refresh Token Is Required')
-  }
-
+export const refreshToken = async (req, res) => {
   try {
-    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, decoded) => {
-      if (err) {
-        return res.status(403).json('Invalid Refresh Token')
-      }
+    const user = new UserRefreshClient(process.env.GOOGLE_ID, process.env.GOOGLE_SECRET, req.body.refreshToken)
+    const { credentials } = await user.refreshAccessToken() // optain new tokens
 
-      // Validate the user exists
-      const user = await User.findById(decoded.id)
-      if (!user) {
-        return res.status(404).json('User Not Found')
-      }
-
-      // Generate a new access token
-      const accessToken = generateAccessToken(user)
-      const refreshToken = generateRefreshToken(user)
-      return res.status(200).json({ accessToken, refreshToken })
-    })
+    return res.status(200).json(credentials)
   } catch (error) {
-    console.error('[refreshAccessToken]', error)
-    return res.status(500).json('Internal Server Error')
+    console.error('[refreshToken]', error)
+    res.status(500).json('Internal Server Error')
   }
 }

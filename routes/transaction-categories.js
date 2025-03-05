@@ -4,25 +4,25 @@ import {
   createTransactionCategory,
   editTransactionCategory,
 } from '../controllers/transaction-categories.js'
-import { authenticateToken, checkAdminPermission } from '../middlewares/auth.js'
+import { authenticateUser, checkAdminPermission } from '../middlewares/auth.js'
 
 const transactionCategoriesRouter = Router()
 
 transactionCategoriesRouter.get(
   '/transaction-categories',
-  authenticateToken,
+  authenticateUser,
   checkAdminPermission,
   getTransactionCategories
 )
 transactionCategoriesRouter.post(
   '/transaction-categories',
-  authenticateToken,
+  authenticateUser,
   checkAdminPermission,
   createTransactionCategory
 )
 transactionCategoriesRouter.patch(
   '/transaction-categories/:id',
-  authenticateToken,
+  authenticateUser,
   checkAdminPermission,
   editTransactionCategory
 )
