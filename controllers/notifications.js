@@ -2,17 +2,19 @@ import Notification from '../models/notification.js'
 import Subscription from '../models/subscription.js'
 import firebaseAdmin from '../lib/firebase.js'
 
+import mongoose from 'mongoose'
+
 export const createNotification = async (req, res) => {
   const { id: user } = req.user
   const { title, body, url } = req.body
 
   try {
-    const notification = await Notification.create({ title, body, url, sender: user })
-
-    const subscriptions = await Subscription.find({}, 'token')
+    const subscriptions = await Subscription.find({ topic: 'general' }, 'token')
     if (subscriptions.length === 0) {
       return res.status(400).json('No Subscription')
     }
+
+    const notification = await Notification.create({ title, body, url, sender: user })
 
     const message = {
       notification: { title, body, url },
@@ -82,7 +84,7 @@ export const getNotification = async (req, res) => {
   try {
     const notifications = await Notification.aggregate([
       {
-        $match: { _id: id },
+        $match: { _id: new mongoose.Types.ObjectId(id) },
       },
       {
         $addFields: {
@@ -116,13 +118,36 @@ export const getNotification = async (req, res) => {
       },
     ])
 
-    if (!notifications.length) {
+    if (notifications.length == 0) {
       return res.status(404).json({ error: 'Notification Not Found' })
     }
 
     return res.status(200).json(notifications[0])
   } catch (error) {
     console.error('[getNotification]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const markNotificationAsRead = async (req, res) => {
+  const { id: user } = req.user
+  const { id } = req.params
+
+  try {
+    const notification = await Notification.findById(id)
+
+    if (!notification) {
+      return res.status(404).json('Notification Not Found')
+    }
+
+    if (!notification.seenBy.includes(user)) {
+      notification.seenBy.push(user)
+      await notification.save()
+    }
+
+    return res.status(200).json('Notification Marked As Read Successfully')
+  } catch (error) {
+    console.error('[markNotificationAsRead]', error)
     return res.status(500).json('Internal Server Error')
   }
 }

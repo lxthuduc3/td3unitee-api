@@ -3,6 +3,7 @@ import { subscribe, unsubscribe } from '../controllers/subcriptions.js'
 import {
   getNotifications,
   getNotification,
+  markNotificationAsRead,
   createNotification,
   deleteNotification,
 } from '../controllers/notifications.js'
@@ -14,6 +15,7 @@ notificationsRouter.post('/notifications/subscribe', authenticateUser, subscribe
 notificationsRouter.post('/notifications/unsubscribe', authenticateUser, unsubscribe)
 notificationsRouter.get('/notifications', authenticateUser, getNotifications)
 notificationsRouter.get('/notifications/:id', authenticateUser, getNotification)
+notificationsRouter.patch('/notifications/:id/mark-as-read', authenticateUser, markNotificationAsRead)
 
 notificationsRouter.post('/notifications', authenticateUser, checkAdminPermission, createNotification)
 notificationsRouter.delete('/notifications/:id', authenticateUser, checkAdminPermission, deleteNotification)

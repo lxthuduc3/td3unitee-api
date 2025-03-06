@@ -12,6 +12,11 @@ const SubscriptionSchema = new Schema(
       ref: 'User',
       required: true,
     },
+    topic: {
+      type: String,
+      required: true,
+      enum: ['general', 'admin'],
+    },
   },
   { timestamps: true }
 )

@@ -3,6 +3,7 @@
 ## To Do
 
 - [ ] Query select fields
+- [ ] Query sort
 
 ## Functions by controllers
 
@@ -93,11 +94,12 @@
 
 ### Notifications / Suscriptions
 
-|     | Route                        | Method   | Controller           | Used By | Note |
-| --- | ---------------------------- | -------- | -------------------- | ------- | ---- |
-| [x] | `/notifications/subscribe`   | `POST`   | `subscribe`          | Member  |      |
-| [x] | `/notifications/unsubscribe` | `POST`   | `unsubscribe`        | Member  |      |
-| [x] | `/notifications`             | `GET`    | `getNotifications`   | Both    |      |
-| [x] | `/notifications/:id`         | `GET`    | `getNotification`    | Both    |      |
-| [x] | `/notifications`             | `POST`   | `createNotification` | Admin   |      |
-| [x] | `/notifications/:id`         | `DELETE` | `deleteNotification` | Admin   |      |
+|     | Route                             | Method   | Controller               | Used By | Note |
+| --- | --------------------------------- | -------- | ------------------------ | ------- | ---- |
+| [x] | `/notifications/subscribe`        | `POST`   | `subscribe`              | Member  |      |
+| [x] | `/notifications/unsubscribe`      | `POST`   | `unsubscribe`            | Member  |      |
+| [x] | `/notifications`                  | `GET`    | `getNotifications`       | Both    |      |
+| [x] | `/notifications/:id`              | `GET`    | `getNotification`        | Member  |      |
+| [x] | `/notifications/:id/mark-as-read` | `PATCH`  | `markNotificationAsRead` | Member  |      |
+| [x] | `/notifications`                  | `POST`   | `createNotification`     | Admin   |      |
+| [x] | `/notifications/:id`              | `DELETE` | `deleteNotification`     | Admin   |      |

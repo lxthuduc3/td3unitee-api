@@ -2,10 +2,14 @@ import Subscription from '../models/subscription.js'
 
 export const subscribe = async (req, res) => {
   const { id: user } = req.user
-  const { token } = req.body
+  const { token, topic } = req.body
 
   try {
-    const subscription = await Subscription.findOneAndUpdate({ token }, { user, token }, { upsert: true, new: true })
+    const subscription = await Subscription.findOneAndUpdate(
+      { token },
+      { user, token, topic },
+      { upsert: true, new: true }
+    )
 
     return res.status(200).json(subscription)
   } catch (error) {
