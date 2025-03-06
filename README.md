@@ -1,5 +1,9 @@
 # TD3 UNITEE API
 
+## To Do
+
+- [ ] Query select fields
+
 ## Functions by controllers
 
 ### Users (Profiles)
@@ -86,3 +90,14 @@
 | [x] | `/meals/:id`        | `PATCH`  | `updateMeal` | Admin   |      |
 | [x] | `/meals/:id`        | `DELETE` | `deleteMeal` | Admin   |      |
 | [x] | `/meals/:day/:meal` | `GET`    | `getMeal`    | Member  |      |
+
+### Notifications / Suscriptions
+
+|     | Route                        | Method   | Controller           | Used By | Note |
+| --- | ---------------------------- | -------- | -------------------- | ------- | ---- |
+| [x] | `/notifications/subscribe`   | `POST`   | `subscribe`          | Member  |      |
+| [x] | `/notifications/unsubscribe` | `POST`   | `unsubscribe`        | Member  |      |
+| [x] | `/notifications`             | `GET`    | `getNotifications`   | Both    |      |
+| [x] | `/notifications/:id`         | `GET`    | `getNotification`    | Both    |      |
+| [x] | `/notifications`             | `POST`   | `createNotification` | Admin   |      |
+| [x] | `/notifications/:id`         | `DELETE` | `deleteNotification` | Admin   |      |
