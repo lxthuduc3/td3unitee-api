@@ -1,4 +1,5 @@
 import Meal from '../models/meal.js'
+import MealRegistration from '../models/meal-registration.js'
 
 export const getMeals = async (req, res) => {
   try {
@@ -72,6 +73,129 @@ export const getMeal = async (req, res) => {
     return res.status(200).json(foundMeal)
   } catch (error) {
     console.error('[getMeal]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const calculateIngredientsToBuy = async (req, res) => {
+  const { meals } = req.body
+
+  console.log(meals)
+
+  try {
+    const ingredients = await MealRegistration.aggregate([
+      {
+        // Get all meal registrations in selected meals
+        $match: {
+          $or: meals.map(({ date, meal }) => ({
+            date: new Date(date),
+            meal,
+          })),
+        },
+      },
+      {
+        // Group to calculate number of eaters for each meals
+        $group: {
+          _id: { date: '$date', meal: '$meal' },
+          eaters: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: '$_id.date',
+          meal: '$_id.meal',
+          eaters: 1,
+          day: { $dayOfWeek: '$_id.date' },
+        },
+      },
+      {
+        // Lookup the menu
+        $lookup: {
+          from: 'meals',
+          let: { mealType: '$meal', day: '$day' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$meal', '$$mealType'] }, { $eq: ['$day', '$$day'] }],
+                },
+              },
+            },
+          ],
+          as: 'menu',
+        },
+      },
+      { $unwind: { path: '$menu', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'dishes',
+          localField: 'menu.mainDish',
+          foreignField: '_id',
+          as: 'menu.mainDish',
+        },
+      },
+      { $unwind: { path: '$menu.mainDish', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'dishes',
+          localField: 'menu.vegie',
+          foreignField: '_id',
+          as: 'menu.vegie',
+        },
+      },
+      { $unwind: { path: '$menu.vegie', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'dishes',
+          localField: 'menu.soup',
+          foreignField: '_id',
+          as: 'menu.soup',
+        },
+      },
+      { $unwind: { path: '$menu.soup', preserveNullAndEmptyArrays: true } },
+      {
+        // Flatten all ingredients into a single array
+        $project: {
+          date: 1,
+          meal: 1,
+          eaters: 1,
+          ingredients: {
+            $concatArrays: ['$menu.mainDish.ingredients', '$menu.vegie.ingredients', '$menu.soup.ingredients'],
+          },
+        },
+      },
+      { $unwind: { path: '$ingredients', preserveNullAndEmptyArrays: true } },
+      {
+        // Scale ingredient amounts
+        $project: {
+          _id: 0,
+          name: '$ingredients.name',
+          unit: '$ingredients.unit',
+          amount: { $multiply: ['$ingredients.amount', { $divide: ['$eaters', 30] }] },
+        },
+      },
+      {
+        // Group ingredients to sum amounts
+        $group: {
+          _id: { name: '$name', unit: '$unit' },
+          amount: { $sum: '$amount' },
+        },
+      },
+      {
+        // Restructure output
+        $project: {
+          _id: 0,
+          name: '$_id.name',
+          unit: '$_id.unit',
+          amount: 1,
+        },
+      },
+    ])
+
+    return res.status(200).json(ingredients)
+  } catch (error) {
+    console.error('[calculateIngredientsToBuy]', error)
     return res.status(500).json('Internal Server Error')
   }
 }

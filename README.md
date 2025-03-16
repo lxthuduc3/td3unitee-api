@@ -1,5 +1,9 @@
 # TD3 UNITEE API
 
+## Deploy note
+
+- You need initialize 14 empty meal
+
 ## To Do
 
 - [ ] Query select fields
@@ -84,13 +88,14 @@
 
 ### Meals
 
-|     | Route               | Method   | Controller   | Used By | Note |
-| --- | ------------------- | -------- | ------------ | ------- | ---- |
-| [x] | `/meals`            | `GET`    | `getMeals`   | Admin   |      |
-| [x] | `/meals`            | `POST`   | `createMeal` | Admin   |      |
-| [x] | `/meals/:id`        | `PATCH`  | `updateMeal` | Admin   |      |
-| [x] | `/meals/:id`        | `DELETE` | `deleteMeal` | Admin   |      |
-| [x] | `/meals/:day/:meal` | `GET`    | `getMeal`    | Member  |      |
+|     | Route                | Method   | Controller                  | Used By | Note |
+| --- | -------------------- | -------- | --------------------------- | ------- | ---- |
+| [x] | `/meals`             | `GET`    | `getMeals`                  | Admin   |      |
+| [x] | `/meals`             | `POST`   | `createMeal`                | Admin   |      |
+| [x] | `/meals/:id`         | `PATCH`  | `updateMeal`                | Admin   |      |
+| [x] | `/meals/:id`         | `DELETE` | `deleteMeal`                | Admin   |      |
+| [x] | `/meals/:day/:meal`  | `GET`    | `getMeal`                   | Member  |      |
+| [ ] | `/meals/ingredients` | `POST`   | `calculateIngredientsToBuy` | Member  |      |
 
 ### Notifications / Suscriptions
 
