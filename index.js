@@ -3,8 +3,6 @@ import { connectToDB } from './lib/db.js'
 import cors from 'cors'
 import { corsBoth } from './lib/cors-configs.js'
 
-import firebaseAdmin from './lib/firebase.js'
-
 import authRouter from './routes/auth.js'
 import usersRouter from './routes/users.js'
 import mealRegistrationRouter from './routes/meal-registrations.js'

@@ -2,12 +2,12 @@ import Subscription from '../models/subscription.js'
 
 export const subscribe = async (req, res) => {
   const { id: user } = req.user
-  const { token, topic } = req.body
+  const { endpoint, keys, topic } = req.body
 
   try {
     const subscription = await Subscription.findOneAndUpdate(
-      { token },
-      { user, token, topic },
+      { endpoint, topic },
+      { user, keys },
       { upsert: true, new: true }
     )
 
@@ -20,10 +20,10 @@ export const subscribe = async (req, res) => {
 
 export const unsubscribe = async (req, res) => {
   const { id: user } = req.user
-  const { token } = req.body
+  const { endpoint } = req.body
 
   try {
-    const subscription = await Subscription.findOneAndDelete({ token, user })
+    const subscription = await Subscription.findOneAndDelete({ endpoint, user })
 
     if (!subscription) {
       return res.status(404).json('Subscription Not Found')

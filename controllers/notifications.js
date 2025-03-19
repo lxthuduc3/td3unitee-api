@@ -1,29 +1,42 @@
 import Notification from '../models/notification.js'
 import Subscription from '../models/subscription.js'
-import firebaseAdmin from '../lib/firebase.js'
 
 import mongoose from 'mongoose'
+import webpush from '../lib/webpush.js'
 
 export const createNotification = async (req, res) => {
   const { id: user } = req.user
   const { title, body, url } = req.body
 
   try {
-    const subscriptions = await Subscription.find({ topic: 'general' }, 'token')
+    const subscriptions = await Subscription.find({ topic: 'general' }, 'endpoint keys')
     if (subscriptions.length === 0) {
       return res.status(400).json('No Subscription')
     }
 
     const notification = await Notification.create({ title, body, url, sender: user })
 
-    const message = {
-      notification: { title, body, url },
-      tokens: subscriptions.map((sub) => sub.token),
-    }
+    const payload = JSON.stringify({ title, body, url })
 
-    const response = await firebaseAdmin.messaging().sendEachForMulticast(message)
+    let successCount = 0
 
-    return res.status(200).json(response)
+    await Promise.all(
+      subscriptions.map(async ({ endpoint, keys }) => {
+        const pushSubscription = { endpoint, keys }
+
+        try {
+          await webpush.sendNotification(pushSubscription, payload)
+          successCount++
+        } catch (error) {
+          console.error('[createNotification]', error)
+        }
+      })
+    )
+
+    return res.status(200).json({
+      total: subscriptions.length,
+      success: successCount,
+    })
   } catch (error) {
     console.error('[createNotification]', error)
     return res.status(500).json('Internal Server Error')

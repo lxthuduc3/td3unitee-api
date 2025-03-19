@@ -2,10 +2,19 @@ import { Schema, model } from 'mongoose'
 
 const SubscriptionSchema = new Schema(
   {
-    token: {
+    endpoint: {
       type: String,
       required: true,
-      unique: true,
+    },
+    keys: {
+      p256dh: {
+        type: String,
+        required: true,
+      },
+      auth: {
+        type: String,
+        required: true,
+      },
     },
     user: {
       type: Schema.Types.ObjectId,

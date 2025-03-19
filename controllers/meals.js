@@ -80,8 +80,6 @@ export const getMeal = async (req, res) => {
 export const calculateIngredientsToBuy = async (req, res) => {
   const { meals } = req.body
 
-  console.log(meals)
-
   try {
     const ingredients = await MealRegistration.aggregate([
       {

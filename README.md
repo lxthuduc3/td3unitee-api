@@ -8,6 +8,7 @@
 
 - [ ] Query select fields
 - [ ] Query sort
+- [ ] Push message to admin
 
 ## Functions by controllers
 
