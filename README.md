@@ -96,9 +96,9 @@
 | [x] | `/meals/:id`         | `PATCH`  | `updateMeal`                | Admin   |      |
 | [x] | `/meals/:id`         | `DELETE` | `deleteMeal`                | Admin   |      |
 | [x] | `/meals/:day/:meal`  | `GET`    | `getMeal`                   | Member  |      |
-| [ ] | `/meals/ingredients` | `POST`   | `calculateIngredientsToBuy` | Member  |      |
+| [x] | `/meals/ingredients` | `POST`   | `calculateIngredientsToBuy` | Member  |      |
 
-### Notifications / Suscriptions
+### Notifications / Subscriptions
 
 |     | Route                             | Method   | Controller               | Used By | Note |
 | --- | --------------------------------- | -------- | ------------------------ | ------- | ---- |
@@ -108,4 +108,16 @@
 | [x] | `/notifications/:id`              | `GET`    | `getNotification`        | Member  |      |
 | [x] | `/notifications/:id/mark-as-read` | `PATCH`  | `markNotificationAsRead` | Member  |      |
 | [x] | `/notifications`                  | `POST`   | `createNotification`     | Admin   |      |
+| [x] | `/notifications/send`             | `POST`   | `sendNotification`       | Admin   |      |
 | [x] | `/notifications/:id`              | `DELETE` | `deleteNotification`     | Admin   |      |
+| [x] | `/notifications/subscriptions`    | `GET`    | `getSubscriptions`       | Admin   |      |
+
+### Documents
+
+|     | Route            | Method   | Controller       | Used By | Note            |
+| --- | ---------------- | -------- | ---------------- | ------- | --------------- |
+| [x] | `/documents`     | `GET`    | `getDocuments`   | Both    | Query: category |
+| [x] | `/documents/:id` | `GET`    | `getDocument`    | Both    |                 |
+| [x] | `/documents`     | `POST`   | `createDocument` | Admin   |                 |
+| [x] | `/documents/:id` | `PATCH`  | `editDocument`   | Admin   |                 |
+| [x] | `/documents/:id` | `DELETE` | `deleteDocument` | Admin   |                 |

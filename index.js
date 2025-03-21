@@ -12,6 +12,7 @@ import absencesRouter from './routes/absences.js'
 import dishesRouter from './routes/dishes.js'
 import mealsRouter from './routes/meals.js'
 import notificationsRouter from './routes/notifications.js'
+import documentsRouter from './routes/documents.js'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -32,6 +33,11 @@ app.use(absencesRouter)
 app.use(dishesRouter)
 app.use(mealsRouter)
 app.use(notificationsRouter)
+app.use(documentsRouter)
+
+app.use((req, res) => {
+  return res.status(404).json('Not Found')
+})
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`)
