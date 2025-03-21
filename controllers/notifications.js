@@ -9,37 +9,29 @@ export const createNotification = async (req, res) => {
   const { title, body, url } = req.body
 
   try {
-    const subscriptions = await Subscription.find({ topic: 'general' }, 'endpoint keys')
-    if (subscriptions.length === 0) {
-      return res.status(400).json('No Subscription')
-    }
-
     const notification = await Notification.create({ title, body, url, sender: user })
 
-    const payload = JSON.stringify({ title, body, url })
-
-    let successCount = 0
-
-    await Promise.all(
-      subscriptions.map(async ({ endpoint, keys }) => {
-        const pushSubscription = { endpoint, keys }
-
-        try {
-          await webpush.sendNotification(pushSubscription, payload)
-          successCount++
-        } catch (error) {
-          console.error('[createNotification]', error)
-        }
-      })
-    )
-
-    return res.status(200).json({
-      total: subscriptions.length,
-      success: successCount,
-    })
+    return res.status(201).json(notification)
   } catch (error) {
     console.error('[createNotification]', error)
     return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const sendNotification = async (req, res) => {
+  const { title, body, url, endpoint, keys } = req.body
+
+  if (!endpoint || !keys || !title || !body) {
+    return res.status(400).json('Missing required fields')
+  }
+
+  try {
+    await webpush.sendNotification({ endpoint, keys }, JSON.stringify({ title, body, url }))
+
+    return res.status(200).json('Notification Sent Successfully')
+  } catch (error) {
+    console.error('[sendNotification]', error)
+    return res.status(500).json('Failed to send notification')
   }
 }
 

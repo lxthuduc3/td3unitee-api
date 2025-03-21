@@ -1,5 +1,18 @@
 import Subscription from '../models/subscription.js'
 
+export const getSubscriptions = async (req, res) => {
+  const { topic } = req.query
+
+  try {
+    const subscriptions = await Subscription.find({ topic })
+
+    return res.status(200).json(subscriptions)
+  } catch (error) {
+    console.error('[getSubscriptions]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
 export const subscribe = async (req, res) => {
   const { id: user } = req.user
   const { endpoint, keys, topic } = req.body
