@@ -26,7 +26,7 @@ export const authenticateUser = async (req, res, next) => {
       return res.status(401).json('Unauthorized: User not found')
     }
 
-    if (req.user.status != 'active') {
+    if (user.status != 'active') {
       return res.status(403).json('Permission Denied')
     }
 
