@@ -1,9 +1,5 @@
 # TD3 UNITEE API
 
-## Deploy note
-
-- You need initialize 14 empty meal
-
 ## To Do
 
 - [ ] Query select fields
