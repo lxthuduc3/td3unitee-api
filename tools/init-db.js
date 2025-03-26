@@ -1,5 +1,5 @@
-import { connectToDB, disconnectToDB } from '../lib/db'
-import Meal from '../models/meal'
+import { connectToDB, disconnectToDB } from '../lib/db.js'
+import Meal from '../models/meal.js'
 
 const init = async () => {
   try {
