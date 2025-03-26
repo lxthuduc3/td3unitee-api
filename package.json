@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "node --watch --env-file .env index.js",
     "start": "node --env-file .env index.js",
-    "init": "node tools/init-db.js"
+    "init": "node --env-file .env tools/init-db.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
