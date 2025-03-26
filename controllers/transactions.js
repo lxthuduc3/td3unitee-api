@@ -1,6 +1,6 @@
 import Transaction from '../models/transaction.js'
 
-import { getStartOfDate, getEndOfDate } from '../lib/datetime.js'
+import { tzfStartOfDay, tzfEndOfDay } from '../lib/timezone-free.js'
 
 export const getOwnExpenses = async (req, res) => {
   const { id: transactor } = req.user
@@ -12,8 +12,8 @@ export const getOwnExpenses = async (req, res) => {
     date: {},
   }
 
-  if (dateFrom) query.date.$gte = getStartOfDate(dateFrom)
-  if (dateTo) query.date.$lte = getEndOfDate(dateTo)
+  if (dateFrom) query.date.$gte = tzfStartOfDay(dateFrom)
+  if (dateTo) query.date.$lte = tzfEndOfDay(dateTo)
   if (status) query.status = Array.isArray(status) ? { $in: status } : status
 
   try {
@@ -235,8 +235,8 @@ export const getTransactions = async (req, res) => {
   const { dateFrom, dateTo, status, category } = req.query
   const query = {}
 
-  if (dateFrom) query.date = { $gte: getStartOfDate(dateFrom) }
-  if (dateTo) query.date = { ...query.date, $lte: getEndOfDate(dateTo) }
+  if (dateFrom) query.date = { $gte: tzfStartOfDay(dateFrom) }
+  if (dateTo) query.date = { ...query.date, $lte: tzfEndOfDay(dateTo) }
   if (status) query.status = Array.isArray(status) ? { $in: status } : status
   if (category) query.category = category
 

@@ -1,7 +1,7 @@
 import MealRegistration from '../models/meal-registration.js'
 
-import { getCurrentWeek, generateDateArray, isSameDate } from '../lib/datetime.js'
-import { startOfDay, endOfDay, startOfWeek, endOfWeek, addDays } from 'date-fns'
+import { startOfWeek, endOfWeek, addDays } from 'date-fns'
+import { tzfStartOfDay, tzfEndOfDay, tzNow } from '../lib/timezone-free.js'
 
 export const createMealRegistration = async (req, res) => {
   const user = req.user.id
@@ -20,11 +20,11 @@ export const createMealRegistration = async (req, res) => {
 export const getOwnMealRegistrations = async (req, res) => {
   const user = req.user.id
 
-  let today = new Date()
-  if (today.getDay() == 6 && today.getHours() >= 19) {
-    today = addDays(today, 1)
+  let now = tzNow()
+  if (now.getDay() == 6 && now.getHours() >= 19) {
+    now = addDays(now, 1)
   }
-  const { dateFrom = startOfDay(startOfWeek(today)), dateTo = endOfDay(endOfWeek(today)) } = req.query
+  const { dateFrom = tzfStartOfDay(startOfWeek(now)), dateTo = tzfEndOfDay(endOfWeek(now)) } = req.query
 
   try {
     const registrations = await MealRegistration.find({
@@ -79,15 +79,12 @@ export const deleteMealRegistration = async (req, res) => {
 export const getMealRegistrationsByMeal = async (req, res) => {
   const { date, meal } = req.params
 
-  const startOfDate = new Date(date)
-  startOfDate.setHours(0, 0, 0, 0)
-
-  const endOfDate = new Date(date)
-  endOfDate.setHours(23, 59, 59, 999)
+  const dateFrom = tzfStartOfDay(date)
+  const dateTo = tzfEndOfDay(date)
 
   try {
     const registrations = await MealRegistration.find({
-      date: { $gte: startOfDate, $lte: endOfDate },
+      date: { $gte: dateFrom, $lte: dateTo },
       meal,
     }).populate('user', 'avatar givenName familyName')
 

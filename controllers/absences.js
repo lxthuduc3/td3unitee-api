@@ -1,14 +1,14 @@
 import Absence from '../models/absence.js'
 
-import { getStartOfDate, getEndOfDate } from '../lib/datetime.js'
+import { tzfStartOfDay, tzfEndOfDay } from '../lib/timezone-free.js'
 
 export const getOwnAbsences = async (req, res) => {
   const { id: user } = req.user
   const { dateFrom, dateTo } = req.query
 
   const query = { user }
-  if (dateFrom) query.date = { ...query.date, $gte: getStartOfDate(dateFrom) }
-  if (dateTo) query.date = { ...query.date, $lte: getEndOfDate(dateTo) }
+  if (dateFrom) query.date = { ...query.date, $gte: tzfStartOfDay(dateFrom) }
+  if (dateTo) query.date = { ...query.date, $lte: tzfEndOfDay(dateTo) }
 
   try {
     const absences = await Absence.find(query)
@@ -54,8 +54,8 @@ export const getAbsences = async (req, res) => {
   const { dateFrom, dateTo } = req.query
   const query = {}
 
-  if (dateFrom) query.date = { ...query.date, $gte: getStartOfDate(dateFrom) }
-  if (dateTo) query.date = { ...query.date, $lte: getEndOfDate(dateTo) }
+  if (dateFrom) query.date = { ...query.date, $gte: tzfStartOfDay(dateFrom) }
+  if (dateTo) query.date = { ...query.date, $lte: tzfEndOfDay(dateTo) }
 
   try {
     const absences = await Absence.find(query).populate('user')
