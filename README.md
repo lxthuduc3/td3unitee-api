@@ -117,3 +117,17 @@
 | [x] | `/documents`     | `POST`   | `createDocument` | Admin   |                 |
 | [x] | `/documents/:id` | `PATCH`  | `editDocument`   | Admin   |                 |
 | [x] | `/documents/:id` | `DELETE` | `deleteDocument` | Admin   |                 |
+
+### Statistics
+
+|     | Route                            | Method | Controller                   | Used By | Note                   |
+| --- | -------------------------------- | ------ | ---------------------------- | ------- | ---------------------- |
+| [x] | `/statistics/balance`            | `GET`  | `calculateBalance`           | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/income`             | `GET`  | `calculateIncome`            | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/expense`            | `GET`  | `calculateExpense`           | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/expense-categories` | `GET`  | `listExpenseCategories`      | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/boarding-fee-debts` | `GET`  | `listBoardingFeeDebts`       | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/active-members`     | `GET`  | `countActiveMembers`         | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/new-members`        | `GET`  | `listNewMembers`             | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/left-members`       | `GET`  | `listLeftMembers`            | Admin   | Query: month (yyyy-MM) |
+| [ ] | `/statistics/absences`           | `GET`  | `listLAbsencesForEachMember` | Admin   | Query: month (yyyy-MM) |
