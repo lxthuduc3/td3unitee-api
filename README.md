@@ -76,23 +76,23 @@
 
 ### Dishes
 
-|     | Route         | Method   | Controller   | Used By | Note          |
-| --- | ------------- | -------- | ------------ | ------- | ------------- |
-| [x] | `/dishes`     | `GET`    | `getDishes`  | Admin   | Queries: type |
-| [x] | `/dishes`     | `POST`   | `createDish` | Admin   |               |
-| [x] | `/dishes/:id` | `PATCH`  | `updateDish` | Admin   |               |
-| [x] | `/dishes/:id` | `DELETE` | `deleteDish` | Admin   |               |
+|     | Route         | Method   | Controller   | Used By            | Note          |
+| --- | ------------- | -------- | ------------ | ------------------ | ------------- |
+| [x] | `/dishes`     | `GET`    | `getDishes`  | Admin, Room Leader | Queries: type |
+| [x] | `/dishes`     | `POST`   | `createDish` | Admin              |               |
+| [x] | `/dishes/:id` | `PATCH`  | `updateDish` | Admin              |               |
+| [x] | `/dishes/:id` | `DELETE` | `deleteDish` | Admin              |               |
 
 ### Meals
 
-|     | Route                | Method   | Controller                  | Used By | Note |
-| --- | -------------------- | -------- | --------------------------- | ------- | ---- |
-| [x] | `/meals`             | `GET`    | `getMeals`                  | Admin   |      |
-| [x] | `/meals`             | `POST`   | `createMeal`                | Admin   |      |
-| [x] | `/meals/:id`         | `PATCH`  | `updateMeal`                | Admin   |      |
-| [x] | `/meals/:id`         | `DELETE` | `deleteMeal`                | Admin   |      |
-| [x] | `/meals/:day/:meal`  | `GET`    | `getMeal`                   | Member  |      |
-| [x] | `/meals/ingredients` | `POST`   | `calculateIngredientsToBuy` | Member  |      |
+|     | Route                | Method   | Controller                  | Used By            | Note |
+| --- | -------------------- | -------- | --------------------------- | ------------------ | ---- |
+| [x] | `/meals`             | `GET`    | `getMeals`                  | Admin, Room Leader |      |
+| [x] | `/meals`             | `POST`   | `createMeal`                | Admin              |      |
+| [x] | `/meals/:id`         | `PATCH`  | `updateMeal`                | Admin, Room Leader |      |
+| [x] | `/meals/:id`         | `DELETE` | `deleteMeal`                | Admin              |      |
+| [x] | `/meals/:day/:meal`  | `GET`    | `getMeal`                   | Member             |      |
+| [x] | `/meals/ingredients` | `POST`   | `calculateIngredientsToBuy` | Member             |      |
 
 ### Notifications / Subscriptions
 
