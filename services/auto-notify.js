@@ -40,7 +40,7 @@ export const initNotificationCronJobs = () => {
     await sendPushToTopic({
       topic: 'general',
       title: 'Đăng ký cơm',
-      body: 'Bạn nhớ đăng ký cơm cho tuần tới nhé!',
+      body: 'Anh em nhớ đăng ký cơm cho tuần tới nhé!',
     })
   })
 
@@ -49,7 +49,7 @@ export const initNotificationCronJobs = () => {
     await sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
-      body: 'Anh em còn 5 phút để đăng ký/huỷ cơm trễ trưa!',
+      body: 'Anh em còn 10 phút để đăng ký/huỷ cơm trễ trưa!',
     })
   })
 
@@ -58,7 +58,7 @@ export const initNotificationCronJobs = () => {
     await sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
-      body: 'Anh em còn 5 phút để đăng ký/huỷ cơm trễ tối!',
+      body: 'Anh em còn 10 phút để đăng ký/huỷ cơm trễ tối!',
     })
   })
 
