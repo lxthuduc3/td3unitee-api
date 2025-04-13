@@ -11,7 +11,7 @@ import { authenticateUser, checkAdminPermission, checkRoomLeaderPermission } fro
 
 const mealsRouter = Router()
 
-mealsRouter.get('/meals', authenticateUser, checkRoomLeaderPermission, getMeals)
+mealsRouter.get('/meals', authenticateUser, getMeals)
 mealsRouter.post('/meals', authenticateUser, checkAdminPermission, createMeal)
 mealsRouter.patch('/meals/:id', authenticateUser, checkRoomLeaderPermission, updateMeal)
 mealsRouter.delete('/meals/:id', authenticateUser, checkAdminPermission, deleteMeal)

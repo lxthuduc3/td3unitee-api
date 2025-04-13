@@ -15,6 +15,8 @@ import notificationsRouter from './routes/notifications.js'
 import documentsRouter from './routes/documents.js'
 import statisticsRouter from './routes/statistics.js'
 
+import { initNotificationCronJobs } from './services/auto-notify.js'
+
 const app = express()
 const port = process.env.PORT || 4000
 
@@ -36,6 +38,8 @@ app.use(mealsRouter)
 app.use(notificationsRouter)
 app.use(documentsRouter)
 app.use(statisticsRouter)
+
+initNotificationCronJobs()
 
 app.use((req, res) => {
   return res.status(404).json('Not Found')

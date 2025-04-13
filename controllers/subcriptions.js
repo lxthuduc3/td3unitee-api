@@ -1,17 +1,28 @@
 import Subscription from '../models/subscription.js'
 
 export const getSubscriptions = async (req, res) => {
-  const { topic } = req.query
+  const { topic, receiver } = req.query;
 
   try {
-    const subscriptions = await Subscription.find({ topic })
+    let query = {};
 
-    return res.status(200).json(subscriptions)
+    if (topic) {
+      query.topic = topic;
+    }
+
+    if (receiver) {
+      query.receiver = receiver;
+    }
+
+    const subscriptions = await Subscription.find(query);
+
+    return res.status(200).json(subscriptions);
   } catch (error) {
-    console.error('[getSubscriptions]', error)
-    return res.status(500).json('Internal Server Error')
+    console.error('[getSubscriptions]', error);
+    return res.status(500).json('Internal Server Error');
   }
-}
+};
+
 
 export const subscribe = async (req, res) => {
   const { id: user } = req.user

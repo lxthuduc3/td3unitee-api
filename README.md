@@ -87,7 +87,7 @@
 
 |     | Route                | Method   | Controller                  | Used By            | Note |
 | --- | -------------------- | -------- | --------------------------- | ------------------ | ---- |
-| [x] | `/meals`             | `GET`    | `getMeals`                  | Admin, Room Leader |      |
+| [x] | `/meals`             | `GET`    | `getMeals`                  | All                |      |
 | [x] | `/meals`             | `POST`   | `createMeal`                | Admin              |      |
 | [x] | `/meals/:id`         | `PATCH`  | `updateMeal`                | Admin, Room Leader |      |
 | [x] | `/meals/:id`         | `DELETE` | `deleteMeal`                | Admin              |      |
@@ -104,7 +104,7 @@
 | [x] | `/notifications/:id`              | `GET`    | `getNotification`        | Member  |      |
 | [x] | `/notifications/:id/mark-as-read` | `PATCH`  | `markNotificationAsRead` | Member  |      |
 | [x] | `/notifications`                  | `POST`   | `createNotification`     | Admin   |      |
-| [x] | `/notifications/send`             | `POST`   | `sendNotification`       | Admin   |      |
+| [x] | `/notifications/send`             | `POST`   | `sendNotification`       | Both    |      |
 | [x] | `/notifications/:id`              | `DELETE` | `deleteNotification`     | Admin   |      |
 | [x] | `/notifications/subscriptions`    | `GET`    | `getSubscriptions`       | Admin   |      |
 

@@ -12,9 +12,9 @@ import { authenticateUser, checkAdminPermission } from '../middlewares/auth.js'
 
 const notificationsRouter = Router()
 
-notificationsRouter.get('/notifications/subscriptions', authenticateUser, checkAdminPermission, getSubscriptions)
+notificationsRouter.get('/notifications/subscriptions', authenticateUser, getSubscriptions)
 notificationsRouter.post('/notifications', authenticateUser, checkAdminPermission, createNotification)
-notificationsRouter.post('/notifications/send', authenticateUser, checkAdminPermission, sendNotification)
+notificationsRouter.post('/notifications/send', authenticateUser, sendNotification)
 notificationsRouter.delete('/notifications/:id', authenticateUser, checkAdminPermission, deleteNotification)
 
 notificationsRouter.post('/notifications/subscribe', authenticateUser, subscribe)
