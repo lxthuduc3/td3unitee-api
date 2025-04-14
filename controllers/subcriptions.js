@@ -11,7 +11,7 @@ export const getSubscriptions = async (req, res) => {
     }
 
     if (receiver) {
-      query.receiver = receiver;
+      query.user = receiver;
     }
 
     const subscriptions = await Subscription.find(query);
