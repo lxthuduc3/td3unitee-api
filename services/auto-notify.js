@@ -1,4 +1,4 @@
-import cron from 'node-cron'
+import { CronJob } from 'cron'
 import webpush from '../lib/webpush.js'
 import Subscription from '../models/subscription.js'
 
@@ -37,31 +37,39 @@ const sendPushToTopic = async ({ topic, title, body }) => {
 }
 
 export const initNotificationCronJobs = () => {
-
-  cron.schedule('0 20 * * 6', async () => {
-    await sendPushToTopic({
+  new CronJob(
+    '0 20 * * 6',
+    () => sendPushToTopic({
       topic: 'general',
       title: 'Đăng ký cơm',
       body: 'Hệ thống đã mở đăng ký cơm cho tuần tới, anh em nhớ vào đăng ký nhé!',
-    })
-  }, { timezone: CRON_TIMEZONE })
+    }),
+    null,
+    true,
+    CRON_TIMEZONE
+  )
 
-
-  cron.schedule('40 10 * * *', async () => {
-    await sendPushToTopic({
+  new CronJob(
+    '40 10 * * *',
+    () => sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
       body: 'Hệ thống sẽ chốt cơm trễ trưa sau 5 phút nữa!',
-    })
-  }, { timezone: CRON_TIMEZONE })
+    }),
+    null,
+    true,
+    CRON_TIMEZONE
+  )
 
-
-  cron.schedule('10 18 * * *', async () => {
-    await sendPushToTopic({
+  new CronJob(
+    '10 18 * * *',
+    () => sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
       body: 'Hệ thống sẽ chốt cơm trễ tối sau 5 phút nữa!',
-    })
-  }, { timezone: CRON_TIMEZONE })
-
+    }),
+    null,
+    true,
+    CRON_TIMEZONE
+  )
 }
