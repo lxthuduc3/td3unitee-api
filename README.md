@@ -96,17 +96,18 @@
 
 ### Notifications / Subscriptions
 
-|     | Route                             | Method   | Controller               | Used By | Note |
-| --- | --------------------------------- | -------- | ------------------------ | ------- | ---- |
-| [x] | `/notifications/subscribe`        | `POST`   | `subscribe`              | Member  |      |
-| [x] | `/notifications/unsubscribe`      | `POST`   | `unsubscribe`            | Member  |      |
-| [x] | `/notifications`                  | `GET`    | `getNotifications`       | Both    |      |
-| [x] | `/notifications/:id`              | `GET`    | `getNotification`        | Member  |      |
-| [x] | `/notifications/:id/mark-as-read` | `PATCH`  | `markNotificationAsRead` | Member  |      |
-| [x] | `/notifications`                  | `POST`   | `createNotification`     | Admin   |      |
-| [x] | `/notifications/send`             | `POST`   | `sendNotification`       | Both    |      |
-| [x] | `/notifications/:id`              | `DELETE` | `deleteNotification`     | Admin   |      |
-| [x] | `/notifications/subscriptions`    | `GET`    | `getSubscriptions`       | Admin   |      |
+|     | Route                                | Method   | Controller               | Used By | Note |
+| --- | ------------------------------------ | -------- | ------------------------ | ------- | ---- |
+| [x] | `/notifications/subscribe`           | `POST`   | `subscribe`              | Member  |      |
+| [x] | `/notifications/unsubscribe`         | `POST`   | `unsubscribe`            | Member  |      |
+| [x] | `/notifications`                     | `GET`    | `getNotifications`       | Both    |      |
+| [x] | `/notifications/:id`                 | `GET`    | `getNotification`        | Member  |      |
+| [x] | `/notifications/:id/mark-as-read`    | `PATCH`  | `markNotificationAsRead` | Member  |      |
+| [x] | `/notifications`                     | `POST`   | `createNotification`     | Admin   |      |
+| [x] | `/notifications/send`                | `POST`   | `sendNotification`       | Both    |      |
+| [x] | `/notifications/:id`                 | `DELETE` | `deleteNotification`     | Admin   |      |
+| [x] | `/notifications/subscriptions`       | `GET`    | `getSubscriptions`       | Admin   |      |
+| [x] | `/notifications/subscriptions-admin` | `GET`    | `getSubscriptionsAdmin`  | Both    |      |
 
 ### Documents
 

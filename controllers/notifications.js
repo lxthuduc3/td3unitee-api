@@ -19,19 +19,28 @@ export const createNotification = async (req, res) => {
 }
 
 export const sendNotification = async (req, res) => {
-  const { title, body, url, endpoint, keys } = req.body
+  const { title, body, url, endpoint, keys } = req.body;
 
   if (!endpoint || !keys || !title || !body) {
-    return res.status(400).json('Missing required fields')
+    return res.status(400).json('Missing required fields');
   }
 
   try {
-    await webpush.sendNotification({ endpoint, keys }, JSON.stringify({ title, body, url }))
-
-    return res.status(200).json('Notification Sent Successfully')
+    await webpush.sendNotification({ endpoint, keys }, JSON.stringify({ title, body, url }));
+    return res.status(200).json('Notification Sent Successfully');
   } catch (error) {
-    console.error('[sendNotification]', error)
-    return res.status(500).json('Failed to send notification')
+    console.error('[sendNotification]', error);
+
+    if (error.statusCode === 410 || error.statusCode === 404) {
+      try {
+        await Subscription.deleteOne({ endpoint });
+        console.log(`Subscription with endpoint ${endpoint} has been deleted due to invalidation.`);
+      } catch (deleteError) {
+        console.error('Failed to delete invalid subscription:', deleteError);
+      }
+    }
+
+    return res.status(500).json('Failed to send notification');
   }
 }
 

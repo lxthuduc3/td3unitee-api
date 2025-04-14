@@ -22,6 +22,25 @@ export const getSubscriptions = async (req, res) => {
     return res.status(500).json('Internal Server Error');
   }
 };
+export const getSubscriptionsAdmin = async (req, res) => {
+  const { topic } = req.query;
+
+  try {
+    const adminSubs = await Subscription.find({ topic: topic });
+
+    const userIds = adminSubs.map(sub => sub.user);
+
+    const subscriptions = await Subscription.find({
+      user: { $in: userIds }
+    });
+
+    return res.status(200).json(subscriptions);
+  } catch (error) {
+    console.error('[getSubscriptionsAdmin]', error);
+    return res.status(500).json('Internal Server Error');
+  }
+};
+
 
 
 export const subscribe = async (req, res) => {
