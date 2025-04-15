@@ -117,7 +117,7 @@ export const deleteExpense = async (req, res) => {
     const transaction = await Transaction.findOneAndDelete({
       _id: id,
       transactor,
-      status: { $in: ['pending', 'pendingReimbursement'] },
+      status: { $in: ['pending', 'pendingReimbursement', 'rejected'] },
     })
 
     if (!transaction) return res.status(404).json('Transaction Not Found Or No Longer Be Deleted')
