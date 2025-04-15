@@ -104,7 +104,17 @@ export const calculateIngredientsToBuy = async (req, res) => {
           date: '$_id.date',
           meal: '$_id.meal',
           eaters: 1,
-          day: { $dayOfWeek: '$_id.date' },
+          day: {
+            $mod: [
+              {
+                $subtract: [
+                  { $dayOfWeek: { $add: ['$_id.date', 1000 * 60 * 60 * 7] } },
+                  1,
+                ],
+              },
+              7,
+            ],
+          }
         },
       },
       {
