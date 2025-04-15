@@ -57,4 +57,7 @@ echo -e "$new_env_vars" > .env
 echo -e "\nInitializing database...\n"
 npm run init
 
+echo -e "\nRestarting PM2...\n"
+pm2 restart td3unitee-api
+
 echo -e "\nDeployment completed successfully!\n"
