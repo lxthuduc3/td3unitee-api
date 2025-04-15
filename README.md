@@ -107,7 +107,7 @@
 | [x] | `/notifications/send`                | `POST`   | `sendNotification`       | Both    |      |
 | [x] | `/notifications/:id`                 | `DELETE` | `deleteNotification`     | Admin   |      |
 | [x] | `/notifications/subscriptions`       | `GET`    | `getSubscriptions`       | Admin   |      |
-| [x] | `/notifications/subscriptions-admin` | `GET`    | `getSubscriptionsAdmin`  | Both    |      |
+| [x] | `/notifications/subscriptions/admin` | `GET`    | `getAdminSubscriptions`  | Both    |      |
 
 ### Documents
 

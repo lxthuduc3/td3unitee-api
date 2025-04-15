@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { subscribe, unsubscribe, getSubscriptions, getSubscriptionsAdmin } from '../controllers/subcriptions.js'
+import { subscribe, unsubscribe, getSubscriptions, getAdminSubscriptions } from '../controllers/subcriptions.js'
 import {
   getNotifications,
   getNotification,
@@ -13,7 +13,7 @@ import { authenticateUser, checkAdminPermission } from '../middlewares/auth.js'
 const notificationsRouter = Router()
 
 notificationsRouter.get('/notifications/subscriptions', authenticateUser, getSubscriptions)
-notificationsRouter.get('/notifications/subscriptions-admin', authenticateUser, getSubscriptionsAdmin)
+notificationsRouter.get('/notifications/subscriptions/admin', authenticateUser, getAdminSubscriptions)
 notificationsRouter.post('/notifications', authenticateUser, checkAdminPermission, createNotification)
 notificationsRouter.post('/notifications/send', authenticateUser, sendNotification)
 notificationsRouter.delete('/notifications/:id', authenticateUser, checkAdminPermission, deleteNotification)
