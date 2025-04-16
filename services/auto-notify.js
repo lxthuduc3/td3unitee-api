@@ -9,7 +9,7 @@ const sendPushToTopic = async ({ topic, title, body }) => {
   const subscriptions = await Subscription.find({ topic })
   const icon = "/public/image/icon.png"
   if (subscriptions.length === 0) {
-    console.log(`Không có ai đăng ký nhận thông báo cho topic: ${topic}`)
+    console.log(`No one is subscribed to receive notifications for topic: ${topic}`)
     return
   }
 
@@ -22,10 +22,10 @@ const sendPushToTopic = async ({ topic, title, body }) => {
         return true
       } catch (err) {
         if (err.statusCode === 410 || err.body?.includes('unsubscribed')) {
-          console.warn(`Subscription hết hạn: ${endpoint}`)
+          console.warn(`Subscription expired or invalid: ${endpoint}`)
           await Subscription.deleteOne({ _id })
         } else {
-          console.error(`[Lỗi gửi tới ${endpoint}]`, err)
+          console.error(`[Error sending to: ${endpoint}]`, err)
         }
         return false
       }
@@ -33,7 +33,7 @@ const sendPushToTopic = async ({ topic, title, body }) => {
   )
 
   const successCount = pushResults.filter(Boolean).length
-  console.log(`Đã gửi thành công: ${successCount}/${subscriptions.length}`)
+  console.log(`Successfully sent: ${successCount}/${subscriptions.length}`)
 }
 
 export const initNotificationCronJobs = () => {
@@ -50,7 +50,7 @@ export const initNotificationCronJobs = () => {
   )
 
   new CronJob(
-    '40 10 * * *',
+    '39 10 * * *',
     () => sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
@@ -62,7 +62,7 @@ export const initNotificationCronJobs = () => {
   )
 
   new CronJob(
-    '10 18 * * *',
+    '9 18 * * *',
     () => sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
