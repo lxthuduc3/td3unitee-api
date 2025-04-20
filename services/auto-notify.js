@@ -33,7 +33,8 @@ const sendPushToTopic = async ({ topic, title, body }) => {
   )
 
   const successCount = pushResults.filter(Boolean).length
-  console.log(`Successfully sent: ${successCount}/${subscriptions.length}`)
+  console.log(`[${new Date().toLocaleString('vi-VN', { timeZone: CRON_TIMEZONE })}] Successfully sent: ${successCount}/${subscriptions.length}`)
+
 }
 
 export const initNotificationCronJobs = () => {
@@ -50,7 +51,7 @@ export const initNotificationCronJobs = () => {
   )
 
   new CronJob(
-    '39 10 * * *',
+    '40 10 * * *',
     () => sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
@@ -62,7 +63,7 @@ export const initNotificationCronJobs = () => {
   )
 
   new CronJob(
-    '9 18 * * *',
+    '10 18 * * *',
     () => sendPushToTopic({
       topic: 'general',
       title: 'Chốt cơm trễ',
@@ -72,4 +73,4 @@ export const initNotificationCronJobs = () => {
     true,
     CRON_TIMEZONE
   )
-}
+} 
