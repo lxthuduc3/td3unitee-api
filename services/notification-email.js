@@ -62,7 +62,8 @@ export const initNotificationCronJobsEmail = () => {
     '0 20 * * 6',
     async () => {
       try {
-        const users = await User.find({}, { email: 1, _id: 0 }).lean()
+        const users = await User.find({ status: 'active' }, { email: 1, _id: 0 }).lean()
+
         if (!users.length) {
           console.log('No users found to send emails.')
           return
