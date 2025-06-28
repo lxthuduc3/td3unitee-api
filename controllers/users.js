@@ -1,5 +1,8 @@
 import User from '../models/user.js'
 
+import { endOfMonth, startOfMonth } from 'date-fns'
+import { tzfEndOfDay, tzfStartOfDay } from '../lib/timezone-free.js'
+
 export const getOwnProfile = async (req, res) => {
   const { id } = req.user
 
@@ -98,6 +101,32 @@ export const updateMember = async (req, res) => {
   } catch (error) {
     console.error('[updateMember]', error)
     return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const newOrLeftMembers = async (req, res) => {
+  const { month, status } = req.query
+  const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
+  const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
+  let query = {
+    status: status,
+  }
+  if (status === 'active') {
+    query.createdAt = { $gte: dateFrom, $lte: dateTo }
+  } else {
+    query.updatedAt = { $gte: dateFrom, $lte: dateTo }
+  }
+
+  try {
+    const members = await User.find(query)
+
+    return res.json({
+      members,
+      count: members.length,
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
 
