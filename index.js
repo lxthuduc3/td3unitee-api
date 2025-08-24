@@ -14,6 +14,7 @@ import mealsRouter from './routes/meals.js'
 import notificationsRouter from './routes/notifications.js'
 import documentsRouter from './routes/documents.js'
 import statisticsRouter from './routes/statistics.js'
+import eventRouter from './routes/events.js'
 
 import { initNotificationCronJobs } from './services/auto-notify.js'
 import { initNotificationCronJobsEmail } from './services/notification-email.js'
@@ -39,6 +40,7 @@ app.use(mealsRouter)
 app.use(notificationsRouter)
 app.use(documentsRouter)
 app.use(statisticsRouter)
+app.use(eventRouter)
 
 initNotificationCronJobs()
 initNotificationCronJobsEmail()
