@@ -132,3 +132,12 @@
 | [x] | `/statistics/new-members`        | `GET`  | `listNewMembers`             | Admin   | Query: month (yyyy-MM) |
 | [x] | `/statistics/left-members`       | `GET`  | `listLeftMembers`            | Admin   | Query: month (yyyy-MM) |
 | [ ] | `/statistics/absences`           | `GET`  | `listLAbsencesForEachMember` | Admin   | Query: month (yyyy-MM) |
+
+### Events
+
+|     | Route         | Method   | Controller        | Used By | Note |
+| --- | ------------- | -------- | ----------------- | ------- | ---- |
+| [x] | `/events`     | `GET`    | `getEventsByWeek` | Both    |      |
+| [x] | `/events`     | `POST`   | `create`          | Admin   |      |
+| [x] | `/events/:id` | `PUT`    | `update`          | Admin   |      |
+| [x] | `/events/:id` | `DELETE` | `delete`          | Admin   |      |

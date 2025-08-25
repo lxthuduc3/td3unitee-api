@@ -32,6 +32,7 @@ class eventController {
         }).format(dateObj)
 
         return {
+          id: event._id,
           title: event.title,
           date: event.date,
           dayOfWeek,
@@ -90,7 +91,10 @@ class eventController {
       if (!id) {
         return res.status(400).json({ message: 'Invalid value' })
       }
-      await Event.deleteOne({ id: id })
+      const result = await Event.findByIdAndDelete(id)
+      if (!result) {
+        return res.status(404).json({ message: 'Event not found!' })
+      }
       return res.status(200).json({ message: 'Delete event success!' })
     } catch (error) {
       console.log('[EventController]', error.message)
