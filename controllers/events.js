@@ -23,7 +23,7 @@ class eventController {
         },
       })
 
-      const formattedEvents = events.map((event) => {
+      const groupedEventsObj = events.reduce((acc, event) => {
         const dateObj = new Date(event.date)
 
         const dayOfWeek = new Intl.DateTimeFormat('vi-VN', {
@@ -31,15 +31,40 @@ class eventController {
           timeZone,
         }).format(dateObj)
 
-        return {
+        if (!acc[dayOfWeek]) {
+          acc[dayOfWeek] = []
+        }
+
+        acc[dayOfWeek].push({
           id: event._id,
           title: event.title,
           date: event.date,
+        })
+
+        return acc
+      }, {})
+
+      const groupedEvents = Object.keys(groupedEventsObj).map((dayOfWeek) => ({
+        dayOfWeek,
+        events: groupedEventsObj[dayOfWeek],
+      }))
+
+      const eventAd = events.map((e) => {
+        const dateObj = new Date(e.date)
+
+        const dayOfWeek = new Intl.DateTimeFormat('vi-VN', {
+          weekday: 'long',
+          timeZone,
+        }).format(dateObj)
+        return {
+          id: e._id,
+          title: e.title,
+          date: e.date,
           dayOfWeek,
         }
       })
 
-      return res.status(200).json({ status: 1, events: formattedEvents })
+      return res.status(200).json({ status: 1, events: groupedEvents, eventAd: eventAd })
     } catch (error) {
       console.error(error)
       return res.status(500).json({ status: 0, message: 'Internal Server Error' })
