@@ -105,6 +105,7 @@ export const initNotificationCronJobs = () => {
             return `${e.title} lúc ${timeString}`
           })
           .join(', ')
+
         await sendPushToTopic({
           topic: 'general',
           title: 'Sự kiện hôm nay',

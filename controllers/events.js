@@ -1,6 +1,6 @@
 import Event from '../models/event.js'
 
-import { startOfWeek, endOfWeek, addDays } from 'date-fns'
+import { startOfWeek, endOfWeek, addDays, addWeeks } from 'date-fns'
 import { tzfStartOfDay, tzfEndOfDay, tzNow } from '../lib/timezone-free.js'
 
 const timeZone = 'Asia/Ho_Chi_Minh'
@@ -11,10 +11,10 @@ class eventController {
   async getEventsByWeek(req, res) {
     try {
       let now = tzNow()
-      if (now.getDay() == 6 && now.getHours() >= 19) {
-        now = addDays(now, 1)
-      }
-      const { dateFrom = tzfStartOfDay(startOfWeek(now)), dateTo = tzfEndOfDay(endOfWeek(now)) } = req.query
+
+      // tuần hiện tại: Thứ 2 → Chủ nhật
+      const dateFrom = tzfStartOfDay(startOfWeek(now, { weekStartsOn: 1 }))
+      const dateTo = tzfEndOfDay(endOfWeek(now, { weekStartsOn: 1 }))
 
       const events = await Event.find({
         date: {
@@ -25,16 +25,12 @@ class eventController {
 
       const groupedEventsObj = events.reduce((acc, event) => {
         const dateObj = new Date(event.date)
-
         const dayOfWeek = new Intl.DateTimeFormat('vi-VN', {
           weekday: 'long',
           timeZone,
         }).format(dateObj)
 
-        if (!acc[dayOfWeek]) {
-          acc[dayOfWeek] = []
-        }
-
+        if (!acc[dayOfWeek]) acc[dayOfWeek] = []
         acc[dayOfWeek].push({
           id: event._id,
           title: event.title,
@@ -51,11 +47,11 @@ class eventController {
 
       const eventAd = events.map((e) => {
         const dateObj = new Date(e.date)
-
         const dayOfWeek = new Intl.DateTimeFormat('vi-VN', {
           weekday: 'long',
           timeZone,
         }).format(dateObj)
+
         return {
           id: e._id,
           title: e.title,
@@ -64,7 +60,7 @@ class eventController {
         }
       })
 
-      return res.status(200).json({ status: 1, events: groupedEvents, eventAd: eventAd })
+      return res.status(200).json({ status: 1, events: groupedEvents, eventAd })
     } catch (error) {
       console.error(error)
       return res.status(500).json({ status: 0, message: 'Internal Server Error' })
