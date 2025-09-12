@@ -107,14 +107,11 @@ export const calculateIngredientsToBuy = async (req, res) => {
           day: {
             $mod: [
               {
-                $subtract: [
-                  { $dayOfWeek: { $add: ['$_id.date', 1000 * 60 * 60 * 7] } },
-                  1,
-                ],
+                $subtract: [{ $dayOfWeek: { $add: ['$_id.date', 1000 * 60 * 60 * 7] } }, 1],
               },
               7,
             ],
-          }
+          },
         },
       },
       {
@@ -184,19 +181,28 @@ export const calculateIngredientsToBuy = async (req, res) => {
         },
       },
       {
-        // Group ingredients to sum amounts
         $group: {
-          _id: { name: '$name', unit: '$unit' },
+          _id: '$name',
           amount: { $sum: '$amount' },
+          units: { $addToSet: '$unit' },
         },
       },
       {
-        // Restructure output
         $project: {
           _id: 0,
-          name: '$_id.name',
-          unit: '$_id.unit',
-          amount: 1,
+          name: '$_id',
+          unit: { $arrayElemAt: ['$units', 0] },
+          amount: {
+            $let: {
+              vars: {
+                intPart: { $floor: '$amount' },
+                fracPart: { $mod: ['$amount', 1] },
+              },
+              in: {
+                $cond: [{ $lt: ['$$fracPart', 0.5] }, { $add: ['$$intPart', 0.5] }, { $ceil: '$amount' }],
+              },
+            },
+          },
         },
       },
     ])
