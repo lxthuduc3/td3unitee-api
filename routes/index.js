@@ -11,6 +11,7 @@ import notificationsRouter from './notifications.js'
 import documentsRouter from './documents.js'
 import statisticsRouter from './statistics.js'
 import eventRouter from './events.js'
+import dutyScheduleRouter from './duty-schedule.js'
 
 const indexRouter = Router()
 
@@ -26,5 +27,6 @@ indexRouter.use(notificationsRouter)
 indexRouter.use(documentsRouter)
 indexRouter.use(statisticsRouter)
 indexRouter.use(eventRouter)
+indexRouter.use('/duty-schedules', dutyScheduleRouter)
 
 export default indexRouter
