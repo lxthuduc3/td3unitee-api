@@ -23,8 +23,8 @@ const generateMailOptions = (toEmail) => ({
     Hệ thống đã mở đăng ký cơm cho tuần tới!<br><br>
     Đừng quên đăng ký nhé!
   </p>
-    <img src="https://td3unitee.online/icon.png" alt="TD3 Unitee" width="120" style="display: block; margin: 16px auto;" />
-    <a href="https://td3unitee.online" style="
+    <img src="https://td3unitee.io.vn/icon.png" alt="TD3 Unitee" width="120" style="display: block; margin: 16px auto;" />
+    <a href="https://td3unitee.io.vn" style="
       display: inline-block;
       margin-top: 20px;
       padding: 12px 24px;

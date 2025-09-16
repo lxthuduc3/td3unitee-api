@@ -13,16 +13,52 @@ export const findUserByEmailOrCreate = async (req, res) => {
     })
     const { email, picture: avatar, family_name: familyName, given_name: givenName } = await userInfoResponse.json()
 
-    let user = await User.findOneAndUpdate({ email }, { givenName, familyName, avatar }, { new: true })
-
-    if (!user) {
-      user = await User.create({ email, givenName, familyName, avatar })
+    // Validate required fields
+    if (!email) {
+      return res.status(400).json({
+        status: 0,
+        message: 'Email không được cung cấp từ Google',
+        field: 'email',
+      })
     }
 
-    res.json({ tokens, user })
+    if (!givenName || !familyName) {
+      return res.status(400).json({
+        status: 0,
+        message: 'Tài khoản Google thiếu thông tin tên. Vui lòng cập nhật tên trong tài khoản Google và thử lại.',
+        field: 'name',
+        missingFields: ['givenName', 'familyName'],
+      })
+    }
+
+    const userData = {
+      email,
+      givenName: givenName,
+      familyName: familyName,
+      avatar: avatar || null,
+    }
+
+    let user = await User.findOneAndUpdate({ email }, userData, { new: true })
+
+    if (!user) {
+      user = await User.create(userData)
+    }
+
+    return res.status(200).json({
+      status: 1,
+      tokens,
+      user,
+      message:
+        !givenName || !familyName
+          ? 'Đăng nhập thành công. Vui lòng cập nhật thông tin cá nhân.'
+          : 'Đăng nhập thành công',
+    })
   } catch (error) {
     console.error('[findUserByEmailOrCreate]', error)
-    res.status(500).json('Internal Server Error')
+    return res.status(500).json({
+      status: 0,
+      message: error.message || 'Internal Server Error',
+    })
   }
 }
 

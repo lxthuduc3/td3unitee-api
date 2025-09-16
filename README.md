@@ -67,12 +67,13 @@
 
 ### Absences
 
-|     | Route              | Method  | Controller       | Used By | Note                      |
-| --- | ------------------ | ------- | ---------------- | ------- | ------------------------- |
-| [x] | `/me/absences`     | `GET`   | `getOwnAbsences` | Member  | Queries: dateFrom, dateTo |
-| [x] | `/me/absences`     | `POST`  | `createAbsence`  | Member  |                           |
-| [x] | `/me/absences/:id` | `PATCH` | `cancelAbsence`  | Member  |                           |
-| [x] | `/absences`        | `GET`   | `getAbsences`    | Admin   | Queries: dateFrom, dateTo |
+|     | Route              | Method  | Controller          | Used By | Note                      |
+| --- | ------------------ | ------- | ------------------- | ------- | ------------------------- |
+| [x] | `/me/absences`     | `GET`   | `getOwnAbsences`    | Member  | Queries: dateFrom, dateTo |
+| [x] | `/me/absences`     | `POST`  | `createAbsence`     | Member  |                           |
+| [x] | `/me/absences/:id` | `PATCH` | `cancelAbsence`     | Member  |                           |
+| [x] | `/absences`        | `GET`   | `getAbsences`       | Admin   | Queries: dateFrom, dateTo |
+| [x] | `/absences/week`   | `GET`   | `getAbsencesByWeek` | Admin   |                           |
 
 ### Dishes
 
@@ -131,7 +132,7 @@
 | [x] | `/statistics/active-members`     | `GET`  | `countActiveMembers`         | Admin   | Query: month (yyyy-MM) |
 | [x] | `/statistics/new-members`        | `GET`  | `listNewMembers`             | Admin   | Query: month (yyyy-MM) |
 | [x] | `/statistics/left-members`       | `GET`  | `listLeftMembers`            | Admin   | Query: month (yyyy-MM) |
-| [ ] | `/statistics/absences`           | `GET`  | `listLAbsencesForEachMember` | Admin   | Query: month (yyyy-MM) |
+| [X] | `/statistics/absences`           | `GET`  | `listLAbsencesForEachMember` | Admin   | Query: month (yyyy-MM) |
 
 ### Events
 
@@ -139,5 +140,14 @@
 | --- | ------------- | -------- | ----------------- | ------- | ---- |
 | [x] | `/events`     | `GET`    | `getEventsByWeek` | Both    |      |
 | [x] | `/events`     | `POST`   | `create`          | Admin   |      |
-| [x] | `/events/:id` | `PUT`    | `update`          | Admin   |      |
 | [x] | `/events/:id` | `DELETE` | `delete`          | Admin   |      |
+
+### Duty schedule
+
+|     | Route                                 | Method   | Controller                | Used By | Note |
+| --- | ------------------------------------- | -------- | ------------------------- | ------- | ---- |
+| [x] | `/duty-schedules/cooking/:date/:meal` | `GET`    | `getCookingByDateAndMeal` | Both    |      |
+| [x] | `/duty-schedules/type/:type`          | `GET`    | `getByType`               | Both    |      |
+| [x] | `/duty-schedules`                     | `GET`    | `getAll`                  | Both    |      |
+| [x] | `/duty-schedules`                     | `POST`   | `upsert`                  | Admin   |      |
+| [x] | `/duty-schedules/:id`                 | `DELETE` | `delete`                  | Admin   |      |
