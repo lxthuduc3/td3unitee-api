@@ -5,8 +5,8 @@ import { authenticateUser, checkAdminPermission, checkUserPermission } from '../
 const dishesRouter = Router()
 
 dishesRouter.get('/dishes', authenticateUser, checkUserPermission, getDishes)
-dishesRouter.post('/dishes', authenticateUser, checkAdminPermission, createDish)
-dishesRouter.patch('/dishes/:id', authenticateUser, checkAdminPermission, updateDish)
-dishesRouter.delete('/dishes/:id', authenticateUser, checkAdminPermission, deleteDish)
+dishesRouter.post('/dishes', authenticateUser, checkUserPermission, createDish)
+dishesRouter.patch('/dishes/:id', authenticateUser, checkUserPermission, updateDish)
+dishesRouter.delete('/dishes/:id', authenticateUser, checkUserPermission, deleteDish)
 
 export default dishesRouter
