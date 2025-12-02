@@ -29,7 +29,7 @@ const UserSchema = new Schema(
     room: String,
     role: {
       type: String,
-      enum: ['executiveBoard', 'roomLeader', 'member'],
+      enum: ['executiveBoard', 'roomLeader', 'member', 'shopper'],
       default: 'member',
     },
     status: {

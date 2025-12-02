@@ -7,13 +7,13 @@ import {
   getMeal,
   calculateIngredientsToBuy,
 } from '../controllers/meals.js'
-import { authenticateUser, checkAdminPermission, checkRoomLeaderPermission } from '../middlewares/auth.js'
+import { authenticateUser, checkAdminPermission, checkUserPermission } from '../middlewares/auth.js'
 
 const mealsRouter = Router()
 
 mealsRouter.get('/meals', authenticateUser, getMeals)
 mealsRouter.post('/meals', authenticateUser, checkAdminPermission, createMeal)
-mealsRouter.patch('/meals/:id', authenticateUser, checkRoomLeaderPermission, updateMeal)
+mealsRouter.patch('/meals/:id', authenticateUser, checkUserPermission, updateMeal)
 mealsRouter.delete('/meals/:id', authenticateUser, checkAdminPermission, deleteMeal)
 mealsRouter.get('/meals/:day/:meal', authenticateUser, getMeal)
 mealsRouter.post('/meals/ingredients', authenticateUser, calculateIngredientsToBuy)

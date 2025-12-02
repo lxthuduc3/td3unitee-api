@@ -45,8 +45,8 @@ export const checkAdminPermission = (req, res, next) => {
   next()
 }
 
-export const checkRoomLeaderPermission = (req, res, next) => {
-  if (req.user.role != 'executiveBoard' && req.user.role != 'roomLeader') {
+export const checkUserPermission = (req, res, next) => {
+  if (req.user.role != 'executiveBoard' && req.user.role != 'roomLeader' && req.user.role != 'shopper') {
     return res.status(403).json('Permission Denied')
   }
   next()
