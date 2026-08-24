@@ -10,6 +10,7 @@ class eventController {
 
   async getEventsByWeek(req, res) {
     try {
+      const { home } = req.user
       let now = tzNow()
 
       // tuần hiện tại: Thứ 2 → Chủ nhật
@@ -17,6 +18,7 @@ class eventController {
       const dateTo = tzfEndOfDay(endOfWeek(now, { weekStartsOn: 1 }))
 
       const events = await Event.find({
+        home,
         date: {
           $gte: dateFrom,
           $lte: dateTo,
@@ -69,13 +71,14 @@ class eventController {
 
   async create(req, res) {
     try {
+      const { home } = req.user
       const { title, date } = req.body
 
       if (!title || title.trim() === '' || !date) {
         return res.status(400).json({ message: 'Invalid value' })
       }
 
-      const event = await Event.create({ title, date })
+      const event = await Event.create({ home, title, date })
 
       return res.status(201).json({ message: 'Create event success', event })
     } catch (error) {
@@ -86,12 +89,13 @@ class eventController {
 
   async update(req, res) {
     try {
+      const { home } = req.user
       const { id } = req.params
       const { title, date } = req.body
       if (!id) {
         return res.status(400).json({ message: 'Invalid value' })
       }
-      const event = await Event.findById(id)
+      const event = await Event.findOne({ _id: id, home })
       if (!event) {
         return res.status(404).json({ message: 'Event not found!' })
       }
@@ -108,11 +112,12 @@ class eventController {
 
   async delete(req, res) {
     try {
+      const { home } = req.user
       const { id } = req.params
       if (!id) {
         return res.status(400).json({ message: 'Invalid value' })
       }
-      const result = await Event.findByIdAndDelete(id)
+      const result = await Event.findOneAndDelete({ _id: id, home })
       if (!result) {
         return res.status(404).json({ message: 'Event not found!' })
       }

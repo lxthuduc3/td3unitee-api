@@ -1,4 +1,5 @@
 import User from '../models/user.js'
+import Home from '../models/home.js'
 import { OAuth2Client, UserRefreshClient } from 'google-auth-library'
 
 const oAuth2Client = new OAuth2Client(process.env.GOOGLE_ID, process.env.GOOGLE_SECRET, 'postmessage')
@@ -48,6 +49,8 @@ export const findUserByEmailOrCreate = async (req, res) => {
       status: 1,
       tokens,
       user,
+      // FE dựa vào cờ này để hiển thị màn hình chọn home (nhà) sau khi đăng nhập Google
+      needsHomeSelection: !user.home,
       message:
         !givenName || !familyName
           ? 'Đăng nhập thành công. Vui lòng cập nhật thông tin cá nhân.'
@@ -59,6 +62,49 @@ export const findUserByEmailOrCreate = async (req, res) => {
       status: 0,
       message: error.message || 'Internal Server Error',
     })
+  }
+}
+
+// Sau khi đăng nhập Google, FE lấy danh sách home (nhà) từ DB cho user chọn.
+// Chọn xong thì user vẫn giữ nguyên logic cũ: chờ admin của home đó duyệt (status = pending).
+export const selectHome = async (req, res) => {
+  const { id } = req.user
+  const { homeId } = req.body
+
+  if (!homeId) {
+    return res.status(400).json({ status: 0, message: 'homeId là bắt buộc' })
+  }
+
+  try {
+    const user = await User.findById(id)
+    if (!user) {
+      return res.status(404).json({ status: 0, message: 'User Not Found' })
+    }
+
+    if (user.status === 'active') {
+      return res.status(400).json({ status: 0, message: 'Tài khoản đã được duyệt, không thể đổi home' })
+    }
+
+    const home = await Home.findOne({ _id: homeId, isActive: true })
+    if (!home) {
+      return res.status(404).json({ status: 0, message: 'Home Not Found' })
+    }
+
+    user.home = home._id
+    // Đảm bảo vẫn giữ trạng thái chờ duyệt sau khi chọn home
+    if (user.status !== 'pending') {
+      user.status = 'pending'
+    }
+    await user.save()
+
+    return res.status(200).json({
+      status: 1,
+      user,
+      message: 'Chọn nhà thành công. Vui lòng chờ quản trị viên của nhà duyệt tài khoản.',
+    })
+  } catch (error) {
+    console.error('[selectHome]', error)
+    return res.status(500).json({ status: 0, message: error.message || 'Internal Server Error' })
   }
 }
 

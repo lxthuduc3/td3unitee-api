@@ -2,6 +2,12 @@ import { Schema, model } from 'mongoose'
 
 const UserSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      // Chưa bắt buộc ngay khi tạo user (đăng nhập Google lần đầu) vì user cần
+      // chọn home (nhà) trước khi được duyệt vào hệ thống.
+    },
     email: {
       type: String,
       required: true,

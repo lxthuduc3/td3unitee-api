@@ -2,6 +2,11 @@ import { Schema, model } from 'mongoose'
 
 const SubscriptionSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      required: true,
+    },
     endpoint: {
       type: String,
       required: true,

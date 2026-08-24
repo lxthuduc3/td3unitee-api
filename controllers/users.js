@@ -52,10 +52,11 @@ export const updateProfile = async (req, res) => {
 }
 
 export const getProfile = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
-    const user = await User.findById(id)
+    const user = await User.findOne({ _id: id, home })
 
     if (!user) {
       return res.status(404).json('User Not Found')
@@ -69,8 +70,10 @@ export const getProfile = async (req, res) => {
 }
 
 export const getMembers = async (req, res) => {
+  const { home } = req.user
+
   try {
-    const users = await User.find({ status: 'active' })
+    const users = await User.find({ status: 'active', home })
 
     return res.status(200).json(users)
   } catch (error) {
@@ -80,12 +83,13 @@ export const getMembers = async (req, res) => {
 }
 
 export const updateMember = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   const { room, role } = req.body
 
   try {
     const member = await User.findOneAndUpdate(
-      { _id: id, status: 'active' },
+      { _id: id, status: 'active', home },
       {
         room,
         role,
@@ -105,10 +109,12 @@ export const updateMember = async (req, res) => {
 }
 
 export const newOrLeftMembers = async (req, res) => {
+  const { home } = req.user
   const { month, status } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
   let query = {
+    home,
     status: status,
   }
   if (status === 'active') {
@@ -131,11 +137,12 @@ export const newOrLeftMembers = async (req, res) => {
 }
 
 export const maskMemberAsLeft = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
     const member = await User.findOneAndUpdate(
-      { _id: id, status: 'active' },
+      { _id: id, status: 'active', home },
       {
         status: 'left',
       },
@@ -154,8 +161,10 @@ export const maskMemberAsLeft = async (req, res) => {
 }
 
 export const getRequests = async (req, res) => {
+  const { home } = req.user
+
   try {
-    const requests = await User.find({ status: 'pending' }).sort({ createdAt: -1 })
+    const requests = await User.find({ status: 'pending', home }).sort({ createdAt: -1 })
 
     return res.status(200).json(requests)
   } catch (error) {
@@ -165,11 +174,12 @@ export const getRequests = async (req, res) => {
 }
 
 export const approveRequest = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
     const request = await User.findOneAndUpdate(
-      { _id: id, status: 'pending' },
+      { _id: id, status: 'pending', home },
       {
         status: 'active',
       },
@@ -188,10 +198,11 @@ export const approveRequest = async (req, res) => {
 }
 
 export const rejectAndDeleteRequest = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
-    const request = await User.findOneAndDelete({ _id: id, status: 'pending' })
+    const request = await User.findOneAndDelete({ _id: id, status: 'pending', home })
 
     if (!request) {
       return res.status(404).json('Request Not Found')

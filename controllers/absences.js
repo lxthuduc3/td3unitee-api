@@ -5,10 +5,10 @@ import { startOfWeek, endOfWeek } from 'date-fns'
 import { tzNow } from '../lib/timezone-free.js'
 
 export const getOwnAbsences = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
   const { dateFrom, dateTo } = req.query
 
-  const query = { user }
+  const query = { user, home }
   if (dateFrom) query.date = { ...query.date, $gte: tzfStartOfDay(dateFrom) }
   if (dateTo) query.date = { ...query.date, $lte: tzfEndOfDay(dateTo) }
 
@@ -22,11 +22,11 @@ export const getOwnAbsences = async (req, res) => {
 }
 
 export const createAbsence = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
   const { date, title, reason } = req.body
 
   try {
-    const absence = await Absence.create({ user, date, title, reason })
+    const absence = await Absence.create({ user, home, date, title, reason })
     return res.status(201).json(absence)
   } catch (error) {
     console.error('[createAbsence]', error)
@@ -35,11 +35,11 @@ export const createAbsence = async (req, res) => {
 }
 
 export const cancelAbsence = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
   const { id } = req.params
 
   try {
-    const absence = await Absence.findOneAndUpdate({ _id: id, user }, { canceled: true })
+    const absence = await Absence.findOneAndUpdate({ _id: id, user, home }, { canceled: true })
 
     if (!absence) {
       return res.status(404).json('Absence Not Found ')
@@ -53,8 +53,9 @@ export const cancelAbsence = async (req, res) => {
 }
 
 export const getAbsences = async (req, res) => {
+  const { home } = req.user
   const { dateFrom, dateTo } = req.query
-  const query = {}
+  const query = { home }
 
   if (dateFrom) query.date = { ...query.date, $gte: tzfStartOfDay(dateFrom) }
   if (dateTo) query.date = { ...query.date, $lte: tzfEndOfDay(dateTo) }
@@ -85,12 +86,15 @@ export const getAbsences = async (req, res) => {
 }
 
 export const getAbsencesByWeek = async (req, res) => {
+  const { home } = req.user
+
   try {
     const now = tzNow()
     const dateFrom = tzfStartOfDay(startOfWeek(now, { weekStartsOn: 1 }))
     const dateTo = tzfEndOfDay(endOfWeek(now, { weekStartsOn: 1 }))
 
     const query = {
+      home,
       date: {
         $gte: dateFrom,
         $lte: dateTo,

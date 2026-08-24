@@ -10,7 +10,8 @@
     "check": "node --check index.js && for file in controllers/*.js lib/*.js middlewares/*.js models/*.js routes/*.js services/*.js tools/*.js; do node --check \"$file\"; done",
     "dev": "node --watch --env-file .env index.js",
     "start": "node --env-file .env index.js",
-    "init": "node --env-file .env tools/init-db.js"
+    "init": "node --env-file .env tools/init-db.js",
+    "migrate:home": "node --env-file .env tools/migrate-home.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

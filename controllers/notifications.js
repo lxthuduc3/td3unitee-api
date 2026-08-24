@@ -5,11 +5,11 @@ import mongoose from 'mongoose'
 import webpush from '../lib/webpush.js'
 
 export const createNotification = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
   const { title, body, url } = req.body
 
   try {
-    const notification = await Notification.create({ title, body, url, sender: user })
+    const notification = await Notification.create({ title, body, url, sender: user, home })
 
     return res.status(201).json(notification)
   } catch (error) {
@@ -45,10 +45,13 @@ export const sendNotification = async (req, res) => {
 }
 
 export const getNotifications = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
 
   try {
     const notifications = await Notification.aggregate([
+      {
+        $match: { home },
+      },
       {
         $addFields: {
           seen: { $in: [user, '$seenBy'] },
@@ -92,13 +95,13 @@ export const getNotifications = async (req, res) => {
 }
 
 export const getNotification = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
   const { id } = req.params
 
   try {
     const notifications = await Notification.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
+        $match: { _id: new mongoose.Types.ObjectId(id), home },
       },
       {
         $addFields: {
@@ -144,11 +147,11 @@ export const getNotification = async (req, res) => {
 }
 
 export const markNotificationAsRead = async (req, res) => {
-  const { id: user } = req.user
+  const { id: user, home } = req.user
   const { id } = req.params
 
   try {
-    const notification = await Notification.findById(id)
+    const notification = await Notification.findOne({ _id: id, home })
 
     if (!notification) {
       return res.status(404).json('Notification Not Found')
@@ -167,9 +170,10 @@ export const markNotificationAsRead = async (req, res) => {
 }
 
 export const deleteNotification = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   try {
-    const notification = await Notification.findByIdAndDelete(id)
+    const notification = await Notification.findOneAndDelete({ _id: id, home })
 
     if (!notification) {
       return res.status(404).json('Notification Not Found')

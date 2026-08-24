@@ -17,7 +17,7 @@ const usersRouter = Router()
 
 usersRouter.get('/me/profile', authenticateUser, getOwnProfile)
 usersRouter.patch('/me/profile/edit', authenticateUser, updateProfile)
-usersRouter.get('/members', getMembers)
+usersRouter.get('/members', authenticateUser, getMembers)
 usersRouter.get('/members/neworleft', authenticateUser, newOrLeftMembers)
 usersRouter.get('/members/:id', authenticateUser, getProfile)
 

@@ -2,6 +2,11 @@ import { Schema, model } from 'mongoose'
 
 const DutyScheduleSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      required: true,
+    },
     type: {
       type: String,
       required: true,
@@ -43,7 +48,7 @@ const DutyScheduleSchema = new Schema(
 )
 
 DutyScheduleSchema.index(
-  { type: 1, day: 1, meal: 1 },
+  { home: 1, type: 1, day: 1, meal: 1 },
   {
     unique: true,
     partialFilterExpression: { type: 'cooking' },

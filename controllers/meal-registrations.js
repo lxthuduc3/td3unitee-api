@@ -4,11 +4,11 @@ import { startOfWeek, endOfWeek, addDays } from 'date-fns'
 import { tzfStartOfDay, tzfEndOfDay, tzNow } from '../lib/timezone-free.js'
 
 export const createMealRegistration = async (req, res) => {
-  const user = req.user.id
+  const { id: user, home } = req.user
   const { date, meal, late } = req.body
 
   try {
-    const registration = await MealRegistration.create({ user, date, meal, late })
+    const registration = await MealRegistration.create({ user, home, date, meal, late })
 
     return res.status(201).json(registration)
   } catch (error) {
@@ -18,7 +18,7 @@ export const createMealRegistration = async (req, res) => {
 }
 
 export const getOwnMealRegistrations = async (req, res) => {
-  const user = req.user.id
+  const { id: user, home } = req.user
 
   let now = tzNow()
   if (now.getDay() == 6 && now.getHours() >= 19) {
@@ -29,6 +29,7 @@ export const getOwnMealRegistrations = async (req, res) => {
   try {
     const registrations = await MealRegistration.find({
       user,
+      home,
       date: { $gte: dateFrom, $lte: dateTo },
     })
 
@@ -40,12 +41,12 @@ export const getOwnMealRegistrations = async (req, res) => {
 }
 
 export const updateMealRegistration = async (req, res) => {
-  const user = req.user.id
+  const { id: user, home } = req.user
   const { id } = req.params
   const { late } = req.body
 
   try {
-    const registration = await MealRegistration.findOneAndUpdate({ _id: id, user }, { late }, { new: true })
+    const registration = await MealRegistration.findOneAndUpdate({ _id: id, user, home }, { late }, { new: true })
 
     if (!registration) {
       return res.status(404).json('Registration Not Found')
@@ -59,11 +60,11 @@ export const updateMealRegistration = async (req, res) => {
 }
 
 export const deleteMealRegistration = async (req, res) => {
-  const user = req.user.id
+  const { id: user, home } = req.user
   const { id } = req.params
 
   try {
-    const registration = await MealRegistration.findOneAndDelete({ _id: id, user })
+    const registration = await MealRegistration.findOneAndDelete({ _id: id, user, home })
 
     if (!registration) {
       return res.status(404).json('Registration Not Found')
@@ -77,6 +78,7 @@ export const deleteMealRegistration = async (req, res) => {
 }
 
 export const getMealRegistrationsByMeal = async (req, res) => {
+  const { home } = req.user
   const { date, meal } = req.params
 
   const dateFrom = tzfStartOfDay(date)
@@ -84,6 +86,7 @@ export const getMealRegistrationsByMeal = async (req, res) => {
 
   try {
     const registrations = await MealRegistration.find({
+      home,
       date: { $gte: dateFrom, $lte: dateTo },
       meal,
     }).populate('user', 'avatar givenName familyName')

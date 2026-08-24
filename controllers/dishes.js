@@ -1,8 +1,9 @@
 import Dish from '../models/dish.js'
 
 export const getDishes = async (req, res) => {
+  const { home } = req.user
   const { type } = req.query
-  const query = {}
+  const query = { home }
 
   if (type) query.type = type
 
@@ -16,10 +17,11 @@ export const getDishes = async (req, res) => {
 }
 
 export const createDish = async (req, res) => {
+  const { home } = req.user
   const { name, type, ingredients } = req.body
 
   try {
-    const dish = await Dish.create({ name, type, ingredients })
+    const dish = await Dish.create({ home, name, type, ingredients })
     return res.status(201).json(dish)
   } catch (error) {
     console.error('[createDish]', error)
@@ -28,11 +30,12 @@ export const createDish = async (req, res) => {
 }
 
 export const updateDish = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   const { name, type, ingredients } = req.body
 
   try {
-    const dish = await Dish.findByIdAndUpdate(id, { name, type, ingredients }, { new: true })
+    const dish = await Dish.findOneAndUpdate({ _id: id, home }, { name, type, ingredients }, { new: true })
 
     if (!dish) {
       return res.status(404).json('Dish Not Found')
@@ -46,10 +49,11 @@ export const updateDish = async (req, res) => {
 }
 
 export const deleteDish = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
-    const dish = await Dish.findByIdAndDelete(id)
+    const dish = await Dish.findOneAndDelete({ _id: id, home })
 
     if (!dish) {
       return res.status(404).json('Dish Not Found')

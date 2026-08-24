@@ -1,9 +1,10 @@
 import Document from '../models/document.js'
 
 export const getDocuments = async (req, res) => {
+  const { home } = req.user
   const { category } = req.query
   try {
-    const documents = await Document.find(category ? { category } : {})
+    const documents = await Document.find(category ? { home, category } : { home })
       .select('title creator category createdAt')
       .populate('creator', 'familyName givenName avatar')
     return res.status(200).json(documents)
@@ -14,9 +15,10 @@ export const getDocuments = async (req, res) => {
 }
 
 export const getDocument = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   try {
-    const document = await Document.findById(id).populate('creator', 'familyName givenName avatar')
+    const document = await Document.findOne({ _id: id, home }).populate('creator', 'familyName givenName avatar')
     if (!document) {
       return res.status(404).json('Document Not Found')
     }
@@ -28,10 +30,10 @@ export const getDocument = async (req, res) => {
 }
 
 export const createDocument = async (req, res) => {
-  const { id: creator } = req.user
+  const { id: creator, home } = req.user
   const { title, content, createdAt, category } = req.body
   try {
-    const document = await Document.create({ title, content, createdAt, category, creator })
+    const document = await Document.create({ title, content, createdAt, category, creator, home })
     return res.status(201).json(document)
   } catch (error) {
     console.error('[createDocument]', error)
@@ -40,10 +42,11 @@ export const createDocument = async (req, res) => {
 }
 
 export const editDocument = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   const { title, content } = req.body
   try {
-    const document = await Document.findByIdAndUpdate(id, { title, content }, { new: true })
+    const document = await Document.findOneAndUpdate({ _id: id, home }, { title, content }, { new: true })
     if (!document) {
       return res.status(404).json('Document Not Found')
     }
@@ -55,9 +58,10 @@ export const editDocument = async (req, res) => {
 }
 
 export const deleteDocument = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   try {
-    const document = await Document.findByIdAndDelete(id)
+    const document = await Document.findOneAndDelete({ _id: id, home })
     if (!document) {
       return res.status(404).json('Document Not Found')
     }

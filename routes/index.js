@@ -12,10 +12,14 @@ import documentsRouter from './documents.js'
 import statisticsRouter from './statistics.js'
 import eventRouter from './events.js'
 import dutyScheduleRouter from './duty-schedule.js'
+import homesRouter from './homes.js'
+import mealTimeSettingsRouter from './meal-time-settings.js'
 
 const indexRouter = Router()
 
 indexRouter.use(authRouter)
+indexRouter.use(homesRouter)
+indexRouter.use(mealTimeSettingsRouter)
 indexRouter.use(usersRouter)
 indexRouter.use(mealRegistrationRouter)
 indexRouter.use(transactionsRouter)

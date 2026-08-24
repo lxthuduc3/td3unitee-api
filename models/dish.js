@@ -2,10 +2,14 @@ import { Schema, model } from 'mongoose'
 
 const DishSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      required: true,
+    },
     name: {
       type: String,
       required: true,
-      unique: true,
     },
     type: {
       type: String,
@@ -38,6 +42,8 @@ const DishSchema = new Schema(
   },
   { timestamps: true }
 )
+
+DishSchema.index({ home: 1, name: 1 }, { unique: true })
 
 const Dish = model('Dish', DishSchema)
 
