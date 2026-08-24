@@ -4,7 +4,9 @@ import { Schema, model } from 'mongoose'
 // - Giờ ăn trưa / ăn tối
 // - Giờ chốt cơm trễ trưa / trễ tối
 // - Ngày + giờ hệ thống mở đăng ký cơm cho tuần tới
-// - Giờ chốt việc đăng ký / chỉnh sửa đăng ký cơm cho từng ngày
+// - Giờ chốt việc đăng ký cơm cho từng ngày
+// (Việc chỉnh sửa đăng ký cơm không có mốc riêng - ăn theo giờ chốt cơm trễ của từng buổi
+// - lunchLateCutoffTime / dinnerLateCutoffTime)
 const MealTimeSettingSchema = new Schema(
   {
     home: {
@@ -42,12 +44,8 @@ const MealTimeSettingSchema = new Schema(
       type: String,
       default: '20:00',
     },
-    // Giờ chốt đăng ký / chỉnh sửa đăng ký cơm cho chính ngày đó, dạng "HH:mm"
+    // Giờ chốt đăng ký cơm cho chính ngày đó, dạng "HH:mm"
     registrationCloseTime: {
-      type: String,
-      default: '10:00',
-    },
-    registrationEditCutoffTime: {
       type: String,
       default: '10:00',
     },
