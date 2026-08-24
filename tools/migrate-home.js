@@ -1,10 +1,3 @@
-// Migration/fallback: gán toàn bộ dữ liệu hiện có (trước khi hệ thống hỗ trợ multi-home)
-// cho một Home (nhà) duy nhất, mặc định là "home 4".
-//
-// Chạy: node tools/migrate-home.js
-// Có thể tuỳ chỉnh tên/mã của home mặc định qua biến môi trường:
-//   DEFAULT_HOME_NAME (mặc định: "Nhà 4")
-//   DEFAULT_HOME_CODE (mặc định: "4")
 
 import { connectToDB, disconnectToDB } from '../lib/db.js'
 import Home from '../models/home.js'
@@ -22,8 +15,8 @@ import TransactionCategory from '../models/transaction-category.js'
 import Transaction from '../models/transaction.js'
 import MealTimeSetting from '../models/meal-time-setting.js'
 
-const DEFAULT_HOME_NAME = process.env.DEFAULT_HOME_NAME || 'Nhà 4'
-const DEFAULT_HOME_CODE = process.env.DEFAULT_HOME_CODE || '4'
+const DEFAULT_HOME_NAME = process.env.DEFAULT_HOME_NAME || 'Nhà 3'
+const DEFAULT_HOME_CODE = process.env.DEFAULT_HOME_CODE || '3'
 
 // Các model có field "home" cần backfill, cùng nhãn để log cho dễ theo dõi.
 const MODELS_TO_BACKFILL = [
