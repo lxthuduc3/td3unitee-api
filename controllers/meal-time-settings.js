@@ -29,7 +29,6 @@ export const updateMealTimeSetting = async (req, res) => {
     registrationOpenDay,
     registrationOpenTime,
     registrationCloseTime,
-    registrationEditCutoffTime,
   } = req.body
 
   try {
@@ -43,7 +42,6 @@ export const updateMealTimeSetting = async (req, res) => {
         registrationOpenDay,
         registrationOpenTime,
         registrationCloseTime,
-        registrationEditCutoffTime,
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     )
