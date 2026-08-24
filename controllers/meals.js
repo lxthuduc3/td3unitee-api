@@ -2,8 +2,10 @@ import Meal from '../models/meal.js'
 import MealRegistration from '../models/meal-registration.js'
 
 export const getMeals = async (req, res) => {
+  const { home } = req.user
+
   try {
-    const meals = await Meal.find().populate('mainDish vegie soup')
+    const meals = await Meal.find({ home }).populate('mainDish vegie soup')
     return res.status(200).json(meals)
   } catch (error) {
     console.error('[getMeals]', error)
@@ -12,10 +14,11 @@ export const getMeals = async (req, res) => {
 }
 
 export const createMeal = async (req, res) => {
+  const { home } = req.user
   const { day, meal, mainDish, vegie, soup } = req.body
 
   try {
-    const newMeal = await Meal.create({ day, meal, mainDish, vegie, soup })
+    const newMeal = await Meal.create({ home, day, meal, mainDish, vegie, soup })
     return res.status(201).json(newMeal)
   } catch (error) {
     console.error('[createMeal]', error)
@@ -24,13 +27,16 @@ export const createMeal = async (req, res) => {
 }
 
 export const updateMeal = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   const { day, meal, mainDish, vegie, soup } = req.body
 
   try {
-    const updatedMeal = await Meal.findByIdAndUpdate(id, { day, meal, mainDish, vegie, soup }, { new: true }).populate(
-      'mainDish vegie soup'
-    )
+    const updatedMeal = await Meal.findOneAndUpdate(
+      { _id: id, home },
+      { day, meal, mainDish, vegie, soup },
+      { new: true }
+    ).populate('mainDish vegie soup')
 
     if (!updatedMeal) {
       return res.status(404).json('Meal Not Found')
@@ -44,10 +50,11 @@ export const updateMeal = async (req, res) => {
 }
 
 export const deleteMeal = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
-    const deletedMeal = await Meal.findByIdAndDelete(id)
+    const deletedMeal = await Meal.findOneAndDelete({ _id: id, home })
 
     if (!deletedMeal) {
       return res.status(404).json('Meal Not Found')
@@ -61,10 +68,11 @@ export const deleteMeal = async (req, res) => {
 }
 
 export const getMeal = async (req, res) => {
+  const { home } = req.user
   const { day, meal } = req.params
 
   try {
-    const foundMeal = await Meal.findOne({ day, meal }).populate('mainDish vegie soup')
+    const foundMeal = await Meal.findOne({ home, day, meal }).populate('mainDish vegie soup')
 
     if (!foundMeal) {
       return res.status(404).json('Meal Not Found')
@@ -78,13 +86,15 @@ export const getMeal = async (req, res) => {
 }
 
 export const calculateIngredientsToBuy = async (req, res) => {
+  const { home } = req.user
   const { meals } = req.body
 
   try {
     const ingredients = await MealRegistration.aggregate([
       {
-        // Get all meal registrations in selected meals
+        // Get all meal registrations in selected meals, trong home hiện tại
         $match: {
+          home,
           $or: meals.map(({ date, meal }) => ({
             date: new Date(date),
             meal,
@@ -123,7 +133,7 @@ export const calculateIngredientsToBuy = async (req, res) => {
             {
               $match: {
                 $expr: {
-                  $and: [{ $eq: ['$meal', '$$mealType'] }, { $eq: ['$day', '$$day'] }],
+                  $and: [{ $eq: ['$meal', '$$mealType'] }, { $eq: ['$day', '$$day'] }, { $eq: ['$home', home] }],
                 },
               },
             },

@@ -3,12 +3,13 @@ import Transaction from '../models/transaction.js'
 import { tzfStartOfDay, tzfEndOfDay } from '../lib/timezone-free.js'
 
 export const getOwnExpenses = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { dateFrom, dateTo, status } = req.query
 
   const query = {
     type: 'expense',
     transactor,
+    home,
     date: {},
   }
 
@@ -27,7 +28,7 @@ export const getOwnExpenses = async (req, res) => {
 }
 
 export const createExpense = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { desc, amount, date, funded } = req.body
 
   try {
@@ -36,6 +37,7 @@ export const createExpense = async (req, res) => {
       amount,
       date,
       transactor,
+      home,
       type: 'expense',
       status: funded ? 'pending' : 'pendingReimbursement',
     })
@@ -48,10 +50,10 @@ export const createExpense = async (req, res) => {
 }
 
 export const getOwnExpense = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
   try {
-    const transaction = await Transaction.findOne({ _id: id, transactor })
+    const transaction = await Transaction.findOne({ _id: id, transactor, home })
 
     if (!transaction) {
       return res.status(404).json('Transaction Not Found')
@@ -65,13 +67,13 @@ export const getOwnExpense = async (req, res) => {
 }
 
 export const editExpense = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
   const { date, amount, desc, funded } = req.body
 
   try {
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: id, transactor, status: { $in: ['pending', 'pendingReimbursement'] } },
+      { _id: id, transactor, home, status: { $in: ['pending', 'pendingReimbursement'] } },
       { date, amount, desc, status: funded ? 'pending' : 'pendingReimbursement' },
       { new: true }
     )
@@ -88,12 +90,12 @@ export const editExpense = async (req, res) => {
 }
 
 export const confirmExpense = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
 
   try {
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: id, transactor, status: 'pendingConfirmation' },
+      { _id: id, transactor, home, status: 'pendingConfirmation' },
       { status: 'completed' },
       { new: true }
     )
@@ -110,13 +112,14 @@ export const confirmExpense = async (req, res) => {
 }
 
 export const deleteExpense = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
 
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: id,
       transactor,
+      home,
       status: { $in: ['pending', 'pendingReimbursement', 'rejected'] },
     })
 
@@ -130,12 +133,13 @@ export const deleteExpense = async (req, res) => {
 }
 
 export const getOwnBoardingFees = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { status } = req.query
 
   const query = {
     type: 'income',
     transactor,
+    home,
   }
 
   if (status) query.status = Array.isArray(status) ? { $in: status } : status
@@ -151,7 +155,7 @@ export const getOwnBoardingFees = async (req, res) => {
 }
 
 export const createBoardingFee = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { desc, amount, date } = req.body
 
   try {
@@ -160,6 +164,7 @@ export const createBoardingFee = async (req, res) => {
       amount,
       date,
       transactor,
+      home,
       type: 'income',
       status: 'pending',
     })
@@ -172,10 +177,10 @@ export const createBoardingFee = async (req, res) => {
 }
 
 export const getOwnBoardingFee = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
   try {
-    const transaction = await Transaction.findOne({ _id: id, transactor })
+    const transaction = await Transaction.findOne({ _id: id, transactor, home })
 
     if (!transaction) {
       return res.status(404).json('Transaction Not Found')
@@ -189,13 +194,13 @@ export const getOwnBoardingFee = async (req, res) => {
 }
 
 export const editBoardingFee = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
   const { date, amount, desc } = req.body
 
   try {
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: id, transactor, status: 'pending' },
+      { _id: id, transactor, home, status: 'pending' },
       { date, amount, desc },
       { new: true }
     )
@@ -212,13 +217,14 @@ export const editBoardingFee = async (req, res) => {
 }
 
 export const deleteBoardingFee = async (req, res) => {
-  const { id: transactor } = req.user
+  const { id: transactor, home } = req.user
   const { id } = req.params
 
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: id,
       transactor,
+      home,
       status: 'pending',
     })
 
@@ -232,8 +238,9 @@ export const deleteBoardingFee = async (req, res) => {
 }
 
 export const getTransactions = async (req, res) => {
+  const { home } = req.user
   const { dateFrom, dateTo, status, category } = req.query
-  const query = {}
+  const query = { home }
 
   if (dateFrom) query.date = { $gte: tzfStartOfDay(dateFrom) }
   if (dateTo) query.date = { ...query.date, $lte: tzfEndOfDay(dateTo) }
@@ -251,10 +258,11 @@ export const getTransactions = async (req, res) => {
 }
 
 export const getTransaction = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
 
   try {
-    const transaction = await Transaction.findById(id)
+    const transaction = await Transaction.findOne({ _id: id, home })
 
     if (!transaction) return res.status(404).json('Transaction Not Found')
 
@@ -266,11 +274,12 @@ export const getTransaction = async (req, res) => {
 }
 
 export const updateTransaction = async (req, res) => {
+  const { home } = req.user
   const { id } = req.params
   const { category, status } = req.body
 
   try {
-    const transaction = await Transaction.findByIdAndUpdate(id, { category, status }, { new: true })
+    const transaction = await Transaction.findOneAndUpdate({ _id: id, home }, { category, status }, { new: true })
 
     if (!transaction) return res.status(404).json('Transaction Not Found')
 

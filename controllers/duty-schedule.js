@@ -7,6 +7,7 @@ class DutyScheduleController {
 
   async getCookingByDateAndMeal(req, res) {
     try {
+      const { home } = req.user
       const { date, meal } = req.params
 
       // Validate input
@@ -27,6 +28,7 @@ class DutyScheduleController {
       const dayOfWeek = dateObj.getDay() // 0=Sunday, 1=Monday, ...
 
       const schedule = await DutySchedule.findOne({
+        home,
         type: 'cooking',
         day: dayOfWeek,
         meal: meal,
@@ -50,6 +52,7 @@ class DutyScheduleController {
   // Tạo hoặc Cập nhật lịch trực
   async upsert(req, res) {
     try {
+      const { home } = req.user
       const { id } = req.query // nếu có id -> update
       const { type, day, meal, description, users } = req.body
 
@@ -72,7 +75,7 @@ class DutyScheduleController {
 
       // Nếu có id thì update
       if (id) {
-        const schedule = await DutySchedule.findById(id)
+        const schedule = await DutySchedule.findOne({ _id: id, home })
         if (!schedule) {
           return res.status(404).json({ message: 'Schedule not found' })
         }
@@ -102,7 +105,7 @@ class DutyScheduleController {
       }
 
       // Nếu không có id thì create mới
-      const scheduleData = { type, users }
+      const scheduleData = { home, type, users }
       if (type === 'cooking') {
         scheduleData.day = day
         scheduleData.meal = meal
@@ -130,13 +133,14 @@ class DutyScheduleController {
   // Xóa lịch trực
   async delete(req, res) {
     try {
+      const { home } = req.user
       const { id } = req.params
 
       if (!id) {
         return res.status(400).json({ message: 'Invalid schedule ID' })
       }
 
-      const result = await DutySchedule.findByIdAndDelete(id)
+      const result = await DutySchedule.findOneAndDelete({ _id: id, home })
       if (!result) {
         return res.status(404).json({ message: 'Schedule not found' })
       }
@@ -150,7 +154,8 @@ class DutyScheduleController {
 
   async getAll(req, res) {
     try {
-      const schedules = await DutySchedule.find()
+      const { home } = req.user
+      const schedules = await DutySchedule.find({ home })
         .populate('users', 'avatar familyName givenName')
         .sort({ type: 1, day: 1, meal: 1 })
 
@@ -176,9 +181,10 @@ class DutyScheduleController {
   // Lấy lịch trực theo type
   async getByType(req, res) {
     try {
+      const { home } = req.user
       const { type } = req.params
 
-      const schedules = await DutySchedule.find({ type })
+      const schedules = await DutySchedule.find({ home, type })
         .populate('users', 'avatar familyName givenName')
         .sort({ day: 1, meal: 1 })
 

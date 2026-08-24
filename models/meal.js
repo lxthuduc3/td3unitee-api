@@ -2,6 +2,11 @@ import { Schema, model } from 'mongoose'
 
 const MealSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      required: true,
+    },
     day: {
       type: Number,
       required: true,
@@ -29,7 +34,7 @@ const MealSchema = new Schema(
   { timestamps: true }
 )
 
-MealSchema.index({ day: 1, meal: 1 }, { unique: true })
+MealSchema.index({ home: 1, day: 1, meal: 1 }, { unique: true })
 
 const Meal = model('Meal', MealSchema)
 

@@ -6,6 +6,7 @@ import { endOfMonth, startOfMonth } from 'date-fns'
 import { tzfEndOfDay, tzfStartOfDay } from '../lib/timezone-free.js'
 
 export const calculateBalance = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
 
@@ -13,6 +14,7 @@ export const calculateBalance = async (req, res) => {
     const result = await Transaction.aggregate([
       {
         $match: {
+          home,
           status: 'completed',
           date: { $lte: dateTo },
         },
@@ -50,6 +52,7 @@ export const calculateBalance = async (req, res) => {
 }
 
 export const calculateIncome = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
@@ -58,6 +61,7 @@ export const calculateIncome = async (req, res) => {
     const result = await Transaction.aggregate([
       {
         $match: {
+          home,
           type: 'income',
           status: 'completed',
           date: { $gte: dateFrom, $lte: dateTo },
@@ -85,6 +89,7 @@ export const calculateIncome = async (req, res) => {
 }
 
 export const calculateExpense = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
@@ -93,6 +98,7 @@ export const calculateExpense = async (req, res) => {
     const result = await Transaction.aggregate([
       {
         $match: {
+          home,
           type: 'expense',
           status: 'completed',
           date: { $gte: dateFrom, $lte: dateTo },
@@ -120,6 +126,7 @@ export const calculateExpense = async (req, res) => {
 }
 
 export const listExpenseCategories = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
@@ -128,6 +135,7 @@ export const listExpenseCategories = async (req, res) => {
     const expenseCategories = await Transaction.aggregate([
       {
         $match: {
+          home,
           type: 'expense',
           status: 'completed',
           date: { $gte: dateFrom, $lte: dateTo },
@@ -168,6 +176,7 @@ export const listExpenseCategories = async (req, res) => {
 }
 
 export const listBoardingFeeDebts = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
@@ -175,7 +184,7 @@ export const listBoardingFeeDebts = async (req, res) => {
   try {
     const boardingFeeDebts = await User.aggregate([
       {
-        $match: { status: 'active' },
+        $match: { home, status: 'active' },
       },
       {
         $lookup: {
@@ -186,6 +195,7 @@ export const listBoardingFeeDebts = async (req, res) => {
           pipeline: [
             {
               $match: {
+                home,
                 type: 'income',
                 status: 'completed',
                 date: { $gte: dateFrom, $lte: dateTo },
@@ -215,11 +225,13 @@ export const listBoardingFeeDebts = async (req, res) => {
 }
 
 export const countActiveMembers = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
 
   try {
     const activeMembers = await User.countDocuments({
+      home,
       status: 'active',
       createdAt: { $lte: dateTo },
     })
@@ -232,12 +244,14 @@ export const countActiveMembers = async (req, res) => {
 }
 
 export const listNewMembers = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
 
   try {
     const newMembers = await User.find({
+      home,
       status: 'active',
       createdAt: { $gte: dateFrom, $lte: dateTo },
     })
@@ -252,12 +266,14 @@ export const listNewMembers = async (req, res) => {
 }
 
 export const listLeftMembers = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
 
   try {
     const leftMembers = await User.find({
+      home,
       status: 'left',
       updatedAt: { $gte: dateFrom, $lte: dateTo },
     })
@@ -272,6 +288,7 @@ export const listLeftMembers = async (req, res) => {
 }
 
 export const listLAbsencesForEachMember = async (req, res) => {
+  const { home } = req.user
   const { month } = req.query
   const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
   const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
@@ -279,6 +296,7 @@ export const listLAbsencesForEachMember = async (req, res) => {
     const absences = await Absence.aggregate([
       {
         $match: {
+          home,
           title: 'Vắng kinh tối',
           date: { $gte: dateFrom, $lte: dateTo },
           canceled: false,

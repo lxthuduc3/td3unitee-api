@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose'
 
 const NotificationSchema = new Schema(
   {
+    home: { type: Schema.Types.ObjectId, ref: 'Home', required: true },
     title: { type: String, required: true },
     body: { type: String, required: true },
     sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },

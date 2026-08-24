@@ -2,6 +2,11 @@ import { Schema, model } from 'mongoose'
 
 const MealRegistrationSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      required: true,
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',

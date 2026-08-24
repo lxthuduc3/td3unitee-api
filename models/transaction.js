@@ -2,6 +2,11 @@ import { Schema, model } from 'mongoose'
 
 const TransactionSchema = new Schema(
   {
+    home: {
+      type: Schema.Types.ObjectId,
+      ref: 'Home',
+      required: true,
+    },
     desc: {
       type: String,
       required: true,
