@@ -54,10 +54,9 @@ const migrate = async () => {
       console.log(`Sử dụng home mặc định đã tồn tại: ${defaultHome.name} (${defaultHome._id})`)
     }
 
-    // 2. Backfill home cho toàn bộ bản ghi hiện có chưa có field home
+    // 2. Ghi đè home cho TOÀN BỘ bản ghi hiện có về home mặc định (chạy lại vẫn luôn đồng bộ)
     for (const { label, model } of MODELS_TO_BACKFILL) {
-      const filter = { $or: [{ home: { $exists: false } }, { home: null }] }
-      const result = await model.updateMany(filter, { $set: { home: defaultHome._id } })
+      const result = await model.updateMany({}, { $set: { home: defaultHome._id } })
       console.log(`[${label}] Đã gán home cho ${result.modifiedCount ?? result.nModified ?? 0} bản ghi.`)
     }
 
@@ -68,7 +67,7 @@ const migrate = async () => {
       console.log(`Đã tạo cài đặt thời gian ăn mặc định cho home ${defaultHome.name}.`)
     }
 
-    console.log('Migration hoàn tất.')
+    console.log('Migration hoàn tất (đã ghi đè home cho toàn bộ bản ghi ở lần chạy này).')
   } catch (error) {
     console.error('Lỗi khi migrate dữ liệu sang home:', error)
   } finally {
