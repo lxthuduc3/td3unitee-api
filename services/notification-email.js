@@ -12,9 +12,9 @@ const transporter = nodemailer.createTransport({
 })
 
 const generateMailOptions = (toEmail) => ({
-  from: 'TD3 Unitee',
+  from: 'TD Unitee',
   to: toEmail,
-  subject: 'TD3 Unitee',
+  subject: 'TD Unitee',
   html: `
   <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 8px; text-align: center;">
     <h2 style="color: #2c3e50;">🍽️ ĐĂNG KÝ CƠM!</h2>
@@ -23,7 +23,7 @@ const generateMailOptions = (toEmail) => ({
     Hệ thống đã mở đăng ký cơm cho tuần tới!<br><br>
     Đừng quên đăng ký nhé!
   </p>
-    <img src="https://td3unitee.io.vn/icon.png" alt="TD3 Unitee" width="120" style="display: block; margin: 16px auto;" />
+    <img src="https://td3unitee.io.vn/icon.png" alt="TD Unitee" width="120" style="display: block; margin: 16px auto;" />
     <a href="https://td3unitee.io.vn" style="
       display: inline-block;
       margin-top: 20px;
