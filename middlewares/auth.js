@@ -3,6 +3,18 @@ import User from '../models/user.js'
 
 const oAuth2Client = new OAuth2Client(process.env.GOOGLE_ID)
 
+// Mồi cache certs của Google (dùng để verify id token) ngay khi server khởi động,
+// tránh việc request đầu tiên của user phải chờ fetch certs từ Google (chậm ~1-3s).
+export const warmUpGoogleCerts = async () => {
+  try {
+    console.time('[warmUpGoogleCerts]')
+    await oAuth2Client.getFederatedSignonCertsAsync()
+    console.timeEnd('[warmUpGoogleCerts]')
+  } catch (error) {
+    console.error('[warmUpGoogleCerts] failed:', error)
+  }
+}
+
 const verifyGoogleToken = async (req) => {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

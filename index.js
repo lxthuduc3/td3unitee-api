@@ -4,6 +4,7 @@ import cors from 'cors'
 import { corsBoth } from './lib/cors-configs.js'
 
 import indexRouter from './routes/index.js'
+import { warmUpGoogleCerts } from './middlewares/auth.js'
 
 import { initNotificationCronJobs } from './services/auto-notify.js'
 import { initNotificationCronJobsEmail } from './services/notification-email.js'
@@ -17,6 +18,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 connectToDB()
+warmUpGoogleCerts()
+
+setInterval(warmUpGoogleCerts, 60 * 60 * 1000) // 1 giờ
 
 app.use(indexRouter)
 
