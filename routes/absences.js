@@ -14,7 +14,7 @@ absencesRouter.get('/me/absences', authenticateUser, getOwnAbsences)
 absencesRouter.post('/me/absences', authenticateUser, createAbsence)
 absencesRouter.patch('/me/absences/:id', authenticateUser, cancelAbsence)
 
-absencesRouter.get('/absences/week', authenticateUser, getAbsencesByWeek)
+absencesRouter.get('/absences/week', authenticateUser, checkAdminPermission, getAbsencesByWeek)
 absencesRouter.get('/absences', authenticateUser, checkAdminPermission, getAbsences)
 
 export default absencesRouter
