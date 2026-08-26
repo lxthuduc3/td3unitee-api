@@ -1,17 +1,23 @@
 import { OAuth2Client } from 'google-auth-library'
+import { performance } from 'node:perf_hooks'
 import User from '../models/user.js'
 
 const oAuth2Client = new OAuth2Client(process.env.GOOGLE_ID)
 
-// Mồi cache certs của Google (dùng để verify id token) ngay khi server khởi động,
-// tránh việc request đầu tiên của user phải chờ fetch certs từ Google (chậm ~1-3s).
+const CRON_TIMEZONE = 'Asia/Ho_Chi_Minh'
+const formatVNTime = (date) => date.toLocaleString('vi-VN', { timeZone: CRON_TIMEZONE, hour12: false })
+
 export const warmUpGoogleCerts = async () => {
+  const startedAt = new Date()
+  const startedAtMs = performance.now()
+
   try {
-    console.time('[warmUpGoogleCerts]')
     await oAuth2Client.getFederatedSignonCertsAsync()
-    console.timeEnd('[warmUpGoogleCerts]')
+    const durationMs = performance.now() - startedAtMs
+    console.log(`[warmUpGoogleCerts] ${formatVNTime(startedAt)} - ${durationMs.toFixed(1)}ms`)
   } catch (error) {
-    console.error('[warmUpGoogleCerts] failed:', error)
+    const durationMs = performance.now() - startedAtMs
+    console.error(`[warmUpGoogleCerts] ${formatVNTime(startedAt)} - failed after ${durationMs.toFixed(1)}ms:`, error)
   }
 }
 
