@@ -14,7 +14,6 @@ export const warmUpGoogleCerts = async () => {
   try {
     await oAuth2Client.getFederatedSignonCertsAsync()
     const durationMs = performance.now() - startedAtMs
-    console.log(`[warmUpGoogleCerts] ${formatVNTime(startedAt)} - ${durationMs.toFixed(1)}ms`)
   } catch (error) {
     const durationMs = performance.now() - startedAtMs
     console.error(`[warmUpGoogleCerts] ${formatVNTime(startedAt)} - failed after ${durationMs.toFixed(1)}ms:`, error)
