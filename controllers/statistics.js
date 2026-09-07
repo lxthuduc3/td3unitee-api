@@ -2,8 +2,9 @@ import Transaction from '../models/transaction.js'
 import User from '../models/user.js'
 import Absence from '../models/absence.js'
 
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns'
 import { tzfEndOfDay, tzfStartOfDay } from '../lib/timezone-free.js'
+import { tzNow } from '../lib/timezone-free.js'
 
 export const calculateBalance = async (req, res) => {
   const { home } = req.user
@@ -283,6 +284,136 @@ export const listLeftMembers = async (req, res) => {
     return res.status(200).json(leftMembers)
   } catch (error) {
     console.error('[listLeftMembers]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const countLeftMembers = async (req, res) => {
+  const { home } = req.user
+  const { month } = req.query
+  const dateFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : new Date()))
+  const dateTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : new Date()))
+
+  try {
+    const leftMembers = await User.countDocuments({
+      home,
+      status: 'left',
+      updatedAt: { $gte: dateFrom, $lte: dateTo },
+    })
+
+    return res.status(200).json({ leftMembers })
+  } catch (error) {
+    console.error('[countLeftMembers]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const countPendingRequests = async (req, res) => {
+  const { home } = req.user
+  const { month } = req.query
+
+  const query = {
+    home,
+    status: 'pending',
+  }
+
+  if (month) {
+    query.createdAt = {
+      $gte: tzfStartOfDay(startOfMonth(new Date(`${month}-01`))),
+      $lte: tzfEndOfDay(endOfMonth(new Date(`${month}-01`))),
+    }
+  }
+
+  try {
+    const pendingRequests = await User.countDocuments(query)
+
+    return res.status(200).json({ pendingRequests })
+  } catch (error) {
+    console.error('[countPendingRequests]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const statisticAbsencesByTitle = async (req, res) => {
+  const { home } = req.user
+  const { month } = req.query
+
+  const now = tzNow()
+  const weekFrom = tzfStartOfDay(startOfWeek(now, { weekStartsOn: 1 }))
+  const weekTo = tzfEndOfDay(endOfWeek(now, { weekStartsOn: 1 }))
+  const monthFrom = tzfStartOfDay(startOfMonth(month ? new Date(`${month}-01`) : now))
+  const monthTo = tzfEndOfDay(endOfMonth(month ? new Date(`${month}-01`) : now))
+
+  try {
+    const [week, monthData] = await Promise.all([
+      Absence.aggregate([
+        {
+          $match: {
+            home,
+            canceled: false,
+            date: { $gte: weekFrom, $lte: weekTo },
+          },
+        },
+        {
+          $group: {
+            _id: '$title',
+            total: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            title: { $ifNull: ['$_id', 'Không rõ tiêu đề'] },
+            total: 1,
+          },
+        },
+        {
+          $sort: { total: -1, title: 1 },
+        },
+      ]),
+      Absence.aggregate([
+        {
+          $match: {
+            home,
+            canceled: false,
+            date: { $gte: monthFrom, $lte: monthTo },
+          },
+        },
+        {
+          $group: {
+            _id: '$title',
+            total: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            title: { $ifNull: ['$_id', 'Không rõ tiêu đề'] },
+            total: 1,
+          },
+        },
+        {
+          $sort: { total: -1, title: 1 },
+        },
+      ]),
+    ])
+
+    return res.status(200).json({
+      week: {
+        from: weekFrom,
+        to: weekTo,
+        titles: week,
+        total: week.reduce((sum, item) => sum + item.total, 0),
+      },
+      month: {
+        from: monthFrom,
+        to: monthTo,
+        titles: monthData,
+        total: monthData.reduce((sum, item) => sum + item.total, 0),
+      },
+    })
+  } catch (error) {
+    console.error('[statisticAbsencesByTitle]', error)
     return res.status(500).json('Internal Server Error')
   }
 }

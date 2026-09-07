@@ -132,6 +132,9 @@
 | [x] | `/statistics/active-members`     | `GET`  | `countActiveMembers`         | Admin   | Query: month (yyyy-MM) |
 | [x] | `/statistics/new-members`        | `GET`  | `listNewMembers`             | Admin   | Query: month (yyyy-MM) |
 | [x] | `/statistics/left-members`       | `GET`  | `listLeftMembers`            | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/left-members/count` | `GET`  | `countLeftMembers`           | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/join-requests/count`| `GET`  | `countPendingRequests`       | Admin   | Query: month (yyyy-MM) |
+| [x] | `/statistics/absences/titles`    | `GET`  | `statisticAbsencesByTitle`   | Admin   | Query: month (yyyy-MM) |
 | [X] | `/statistics/absences`           | `GET`  | `listLAbsencesForEachMember` | Admin   | Query: month (yyyy-MM) |
 
 ### Events
