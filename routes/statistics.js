@@ -11,6 +11,7 @@ import {
   countLeftMembers,
   countPendingRequests,
   statisticAbsencesByTitle,
+  statisticAbsencesByDay,
   listLAbsencesForEachMember,
 } from '../controllers/statistics.js'
 import { authenticateUser, checkAdminPermission } from '../middlewares/auth.js'
@@ -29,6 +30,7 @@ statisticsRouter.get('/statistics/left-members', authenticateUser, checkAdminPer
 statisticsRouter.get('/statistics/left-members/count', authenticateUser, checkAdminPermission, countLeftMembers)
 statisticsRouter.get('/statistics/join-requests/count', authenticateUser, checkAdminPermission, countPendingRequests)
 statisticsRouter.get('/statistics/absences/titles', authenticateUser, checkAdminPermission, statisticAbsencesByTitle)
+statisticsRouter.get('/statistics/absences/daily', authenticateUser, checkAdminPermission, statisticAbsencesByDay)
 statisticsRouter.get('/statistics/absences', authenticateUser, checkAdminPermission, listLAbsencesForEachMember)
 
 export default statisticsRouter

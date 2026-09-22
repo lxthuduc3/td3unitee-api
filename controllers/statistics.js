@@ -2,9 +2,11 @@ import Transaction from '../models/transaction.js'
 import User from '../models/user.js'
 import Absence from '../models/absence.js'
 
-import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns'
+import { eachDayOfInterval, endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 import { tzfEndOfDay, tzfStartOfDay } from '../lib/timezone-free.js'
 import { tzNow } from '../lib/timezone-free.js'
+
+const TIMEZONE = 'Asia/Ho_Chi_Minh'
 
 export const calculateBalance = async (req, res) => {
   const { home } = req.user
@@ -414,6 +416,57 @@ export const statisticAbsencesByTitle = async (req, res) => {
     })
   } catch (error) {
     console.error('[statisticAbsencesByTitle]', error)
+    return res.status(500).json('Internal Server Error')
+  }
+}
+
+export const statisticAbsencesByDay = async (req, res) => {
+  const { home } = req.user
+  const { month } = req.query
+  const monthStart = startOfMonth(month ? new Date(`${month}-01`) : new Date())
+  const monthEnd = endOfMonth(month ? new Date(`${month}-01`) : new Date())
+  const dateFrom = tzfStartOfDay(monthStart)
+  const dateTo = tzfEndOfDay(monthEnd)
+
+  try {
+    const result = await Absence.aggregate([
+      {
+        $match: {
+          home,
+          canceled: false,
+          date: { $gte: dateFrom, $lte: dateTo },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            date: { $dateToString: { format: '%Y-%m-%d', date: '$date', timezone: TIMEZONE } },
+            title: { $ifNull: ['$title', 'Không rõ tiêu đề'] },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ])
+
+    const days = eachDayOfInterval({ start: monthStart, end: monthEnd }).map((day) => format(day, 'yyyy-MM-dd'))
+    const dayIndex = new Map(days.map((date, index) => [date, index]))
+    const seriesByTitle = new Map()
+
+    for (const { _id, count } of result) {
+      if (!dayIndex.has(_id.date)) continue
+      if (!seriesByTitle.has(_id.title)) {
+        seriesByTitle.set(_id.title, { title: _id.title, total: 0, counts: days.map(() => 0) })
+      }
+      const series = seriesByTitle.get(_id.title)
+      series.counts[dayIndex.get(_id.date)] = count
+      series.total += count
+    }
+
+    const series = [...seriesByTitle.values()].sort((a, b) => b.total - a.total || a.title.localeCompare(b.title))
+
+    return res.status(200).json({ days, series })
+  } catch (error) {
+    console.error('[statisticAbsencesByDay]', error)
     return res.status(500).json('Internal Server Error')
   }
 }
