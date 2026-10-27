@@ -481,7 +481,7 @@ export const listLAbsencesForEachMember = async (req, res) => {
       {
         $match: {
           home,
-          title: 'Vắng kinh tối',
+          title: { $in: ['Vắng kinh tối', 'Về trễ'] },
           date: { $gte: dateFrom, $lte: dateTo },
           canceled: false,
         },
@@ -489,7 +489,8 @@ export const listLAbsencesForEachMember = async (req, res) => {
       {
         $group: {
           _id: '$user',
-          absences: { $sum: 1 }, // Count absences per user
+          absences: { $sum: { $cond: [{ $eq: ['$title', 'Vắng kinh tối'] }, 1, 0] } }, // Count absences per user
+          lateReturns: { $sum: { $cond: [{ $eq: ['$title', 'Về trễ'] }, 1, 0] } },
         },
       },
       {
@@ -509,10 +510,11 @@ export const listLAbsencesForEachMember = async (req, res) => {
           familyName: '$userInfo.familyName',
           givenName: '$userInfo.givenName',
           absences: 1,
+          lateReturns: 1,
         },
       },
       {
-        $sort: { absences: -1 },
+        $sort: { absences: -1, lateReturns: -1 },
       },
     ])
 
